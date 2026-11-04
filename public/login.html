@@ -13,24 +13,17 @@
 </head>
 
 <body>
-
     <main class="login-container">
-
-        <!-- PANEL IZQUIERDO -->
         <section class="login-brand">
-
             <div class="brand-logo">
                 <i class="bi bi-people-fill"></i>
                 <span>CobitSys</span>
             </div>
-
             <div class="brand-content">
                 <h1>Control de asistencia inteligente</h1>
                 <p>Gestiona tu equipo de trabajo.</p>
             </div>
-
             <div class="brand-features">
-
                 <div class="brand-feature">
                     <div class="feature-icon">
                         <i class="bi bi-geo-alt"></i>
@@ -40,17 +33,6 @@
                         <small>Registra ubicaciones de manera segura.</small>
                     </div>
                 </div>
-
-                <div class="brand-feature">
-                    <div class="feature-icon">
-                        <i class="bi bi-camera"></i>
-                    </div>
-                    <div class="feature-text">
-                        <strong>Validación mediante selfie</strong>
-                        <small>Verifica los registros de asistencia.</small>
-                    </div>
-                </div>
-
                 <div class="brand-feature">
                     <div class="feature-icon">
                         <i class="bi bi-clipboard-data"></i>
@@ -60,71 +42,48 @@
                         <small>Consulta y analiza la asistencia.</small>
                     </div>
                 </div>
-
             </div>
-
             <footer class="brand-footer">
                 CobitSys Asistencia © 2026
             </footer>
-
         </section>
-
-        <!-- PANEL DERECHO -->
         <section class="login-form-section">
-
             <div class="login-card">
-
-                <!-- ENCABEZADO -->
                 <div class="login-heading">
                     <h2>¡Bienvenido!</h2>
                     <p>Ingresa tus credenciales para continuar.</p>
                 </div>
-
-                <!-- FORMULARIO -->
                 <form action="" id="formLogin">
-
-                    <!-- USUARIO -->
                     <div class="mb-3">
                         <label for="nombre_usuario" class="form-label">
                             Nombre de usuario
                         </label>
-
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="bi bi-person"></i>
                             </span>
-
                             <input type="text" id="nombre_usuario" name="nombre_usuario"
                                 placeholder="Ingresa tu usuario" autocomplete="username" required>
                         </div>
                     </div>
-
-                    <!-- CONTRASEÑA -->
                     <div class="mb-3">
                         <label for="clave_acceso">
                             Contraseña
                         </label>
-
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="bi bi-lock"></i>
                             </span>
-
                             <input type="password" id="clave_acceso" name="clave_acceso"
                                 placeholder="Ingresa tu contraseña" autocomplete="current-password" required>
                         </div>
                     </div>
 
-                    <!-- MENSAJE DE ERROR -->
                     <div id="loginError"></div>
-
-                    <!-- BOTÓN -->
                     <button type="submit" id="btnLogin" class="btn-login">
                         Iniciar sesión
                     </button>
-
                 </form>
-
                 <div class="login-footer">
                     © 2026 CobitSys Asistencia. Todos los derechos reservados.
                 </div>

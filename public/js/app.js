@@ -16,9 +16,6 @@ async function llamarApi(url, metodo, datos){
     window.location.href = '/login.html'
     throw new Error('Sesion expirada')
   }
-
-
-  
   const resultado = await respuesta.json()
   
   //Si el estado es diferente a 2XX

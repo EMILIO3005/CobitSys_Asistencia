@@ -10,5 +10,6 @@ const {verifyToken, requireLevel} = require('../middlewares/auth')
 router.use('/auth', require('./auth.routes'))
 router.use('/personas', verifyToken, require('./persona.routes'))
 router.use('/usuarios', verifyToken, requireLevel('ADMIN'), require('./usuario.routes'))
+router.use('/sedes', verifyToken, requireLevel('ADMIN'), require('./sede.routes'))
 
 module.exports = router

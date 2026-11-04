@@ -91,6 +91,16 @@ body {
     gap: 17px;
 }
 
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.top-actions > .dropdown {
+    position: relative;
+}
+
 .top-button {
     position: relative;
     border: none;
@@ -108,7 +118,7 @@ body {
 }
 
 .notification-count {
-    position: absolute;
+    position:absolute;
     top: 0;
     right: 0;
     background: #ef4444;
@@ -120,6 +130,9 @@ body {
 
 /* MENÚ NOTIFICACIONES */
 .notification-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
     width: 310px;
     border: none;
     border-radius: 10px;
