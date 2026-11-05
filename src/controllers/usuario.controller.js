@@ -45,14 +45,14 @@ exports.create = async (req, res) => {
     //Verificar credenciales
     checkCredentials(req.body, { claveObligatoria: true })
 
-    await db("usuarios").insert({
+    const [id] = await db("usuarios").insert({
         idpersona,
         nombre_usuario,
         nivel_acceso,
         estado,
         clave_acceso: await bcrypt.hash(clave_acceso, 10)
     })
-    res.status(201).json({ idusuario, message: "Usuario creado correctamente" })
+    res.status(201).json({ id, message: "Usuario creado correctamente" })
 }
 
 //Actualizar

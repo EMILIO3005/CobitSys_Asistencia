@@ -7,7 +7,7 @@ const { httpError, requireFields, isEmail } = require('../utils')
 const camposRequeridos = ['apellidos', 'nombres','tipodoc','numdoc','fechanac','direccion','telefono','email']
 
 const pick = (body) => {
-    Object.fromEntries(
+   return Object.fromEntries(
         camposRequeridos.filter((key) => key in body).map(
             (key) => [key, typeof body[key] === 'string' ? body[key].trim() : body[key]]
         )
@@ -43,8 +43,11 @@ exports.create = async (req, res) => {
 //Actualizar
 
 exports.update = async (req, res) => {
-    requireFields(req.body, ["apellidos", "nombres", "tipodoc", "numdoc", "fechanac", "direccion", "telefono", "email"])
 
+    const datos = pick(req.body)
+
+    requireFields(datos, camposRequeridos)
+    
     if (!isEmail(req.body.email)) {
         throw httpError(400, 'El email no es válido')
     }
