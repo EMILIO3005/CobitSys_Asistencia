@@ -11,5 +11,6 @@ router.use('/auth', require('./auth.routes'))
 router.use('/personas', verifyToken, require('./persona.routes'))
 router.use('/usuarios', verifyToken, requireLevel('ADMIN'), require('./usuario.routes'))
 router.use('/sedes', verifyToken, requireLevel('ADMIN'), require('./sede.routes'))
-
+router.use('/horarios', verifyToken, requireLevel('ADMIN'), require('./horario.routes'))
+router.use('/marcaciones', verifyToken, require('./marcacion.routes'))
 module.exports = router
