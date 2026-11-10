@@ -1,77 +1,228 @@
 
-window.iniciarAsistencia = async function () {
-    console.log('Módulo de asistencia iniciado')
-
-    iniciarReloj()
-
-    await cargarDatosAsistencia()
-}
-
-async function cargarDatosAsistencia() {
-    console.log('Cargando datos de asistencia...')
-
-    const usuario = window.usuarioActual
-
-    if (!usuario) {
-        console.error('No se encontraron los datos del usuario')
-        return
-    }
-
-    // Datos del usuario autenticado
-    document.getElementById('nombreUsuario').textContent =
-        `${usuario.nombres} ${usuario.apellidos}`
-
-    document.getElementById('rolUsuario').textContent =
-        usuario.nivel_acceso
-
-    // Inicializar la vista de marcaciones
-    await actualizarVista()
-}
-
-
-// ============================================
-// RELOJ Y FECHA
-// ============================================
-
 let intervaloReloj = null
+window.iniciarAsistencia = async function () {
 
-function iniciarReloj() {
-    const fechaElemento = document.getElementById('fechaActual')
-    const horaElemento = document.getElementById('hora')
+    // ELEMENTOS DEL HTML
+    const nombreUsuario = document.getElementById('nombreUsuario')
+    const rolUsuario = document.getElementById('rolUsuario')
+    const fechaActual = document.getElementById('fechaActual')
+    const hora = document.getElementById('hora')
+    const estadoAsistencia = document.getElementById('estadoAsistencia')
+    const btnRegistrar = document.getElementById('btnRegistrar')
 
-    // Evitar crear varios intervalos
-    if (intervaloReloj) {
-        clearInterval(intervaloReloj)
+    const horas = {
+        entrada: document.getElementById('horaEntrada'),
+        inicio_ref: document.getElementById('horaInicioRef'),
+        fin_ref: document.getElementById('horaFinRef'),
+        salida: document.getElementById('horaSalida')
     }
 
-    function actualizarFechaHora() {
+    // CONFIGURACIÓN DE MARCACIONES
+    const tipos = {
+        entrada: {
+            siguiente: 'inicio_ref',
+            texto: 'Registrar entrada'
+        },
+        inicio_ref: {
+            siguiente: 'fin_ref',
+            texto: 'Iniciar refrigerio'
+        },
+        fin_ref: {
+            siguiente: 'salida',
+            texto: 'Finalizar refrigerio'
+        },
+        salida: {
+            siguiente: null,
+            texto: 'Registrar salida'
+        }
+    }
+
+    let marcacionActual = null
+
+    // FORMATO DE HORA
+    function obtenerHora(hora) {
+        if (!hora) return 'Pendiente'
+        return String(hora).substring(0, 8)
+    }
+
+    // RELOJ EN TIEMPO REAL
+    function actualizarReloj() {
         const ahora = new Date()
 
-        fechaElemento.textContent = ahora.toLocaleDateString('es-PE', {
+        fechaActual.textContent = ahora.toLocaleDateString('es-PE', {
+            timeZone: 'America/Lima',
             weekday: 'long',
-            day: 'numeric',
+            day: '2-digit',
             month: 'long',
             year: 'numeric'
         })
 
-        horaElemento.textContent = ahora.toLocaleTimeString('es-PE', {
+        hora.textContent = ahora.toLocaleTimeString('es-PE', {
+            timeZone: 'America/Lima',
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
-            hour12: false
+            hour12: true
         })
     }
 
-    actualizarFechaHora()
+    actualizarReloj()
 
-    intervaloReloj = setInterval(actualizarFechaHora, 1000)
-}
+    if (intervaloReloj) {clearInterval(intervaloReloj)}
 
+    intervaloReloj = setInterval(actualizarReloj, 1000)
 
-async function actualizarVista() {
-    const estado = document.getElementById('estadoAsistencia')
+    // LLAMAR API
+    async function llamarApi(url, metodo = 'GET', datos = null) {
 
-    // Por ahora no existen marcaciones cargadas.
-    // Este estado cambiará cuando conectemos la API.
-    estado.textContent = 'Aún sin marcar hoy'
+        const opciones = {
+            method: metodo,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        }
+
+        if (datos) {
+            opciones.body = JSON.stringify(datos)
+        }
+
+        const respuesta = await fetch(url, opciones)
+
+        const resultado = await respuesta.json()
+
+        if (!respuesta.ok) {
+            throw new Error(resultado.message || 'Error al comunicarse con el servidor')
+        }
+
+        return resultado
+    }
+
+    // CARGAR INFORMACIÓN DEL USUARIO
+    async function cargarUsuario() {
+        try {
+            const datos = await llamarApi('/api/auth/me')
+
+            // Admite las estructuras habituales de respuesta
+            const usuario = datos.usuario || datos.yo || datos
+
+            nombreUsuario.textContent =
+                `${usuario.nombres || ''} ${usuario.apellidos || ''}`.trim()
+
+            rolUsuario.textContent = usuario.nivel_acceso || ''
+
+        } catch (error) {
+            console.error('Error al cargar usuario:', error)
+            nombreUsuario.textContent = 'No se pudo cargar el usuario'
+        }
+    }
+
+    // MOSTRAR MARCACIONES
+    function mostrarMarcaciones(marcacion) {
+
+        marcacionActual = marcacion
+
+        Object.keys(horas).forEach(tipo => {
+            horas[tipo].textContent = obtenerHora(marcacion?.[tipo])
+        })
+
+        actualizarEstado()
+    }
+
+    // DETERMINAR SIGUIENTE MARCACIÓN
+    function obtenerSiguienteMarcacion() {
+
+        if (!marcacionActual || !marcacionActual.entrada) {
+            return 'entrada'
+        }
+
+        if (!marcacionActual.inicio_ref) {
+            return 'inicio_ref'
+        }
+
+        if (!marcacionActual.fin_ref) {
+            return 'fin_ref'
+        }
+
+        if (!marcacionActual.salida) {
+            return 'salida'
+        }
+
+        return null
+    }
+
+    // ACTUALIZAR ESTADO Y BOTÓN
+    function actualizarEstado() {
+
+        const siguiente = obtenerSiguienteMarcacion()
+
+        if (!siguiente) {
+            estadoAsistencia.textContent = 'Jornada finalizada'
+            btnRegistrar.textContent = 'Asistencia completada'
+            btnRegistrar.disabled = true
+            return
+        }
+
+        if (!marcacionActual) {
+            estadoAsistencia.textContent = 'Aún sin marcar hoy'
+        } else {
+            estadoAsistencia.textContent = 'Asistencia en curso'
+        }
+
+        btnRegistrar.textContent = tipos[siguiente].texto
+        btnRegistrar.disabled = false
+    }
+
+    // CONSULTAR ASISTENCIA DEL DÍA
+    async function cargarAsistencia() {
+
+        try {
+            const datos = await llamarApi('/api/marcaciones/hoy')
+
+            mostrarMarcaciones(datos.marcacion)
+
+        } catch (error) {
+            console.error('Error al consultar asistencia:', error)
+
+            estadoAsistencia.textContent = error.message
+            btnRegistrar.disabled = true
+        }
+    }
+
+    // REGISTRAR MARCACIÓN
+    async function registrarMarcacion() {
+
+        const tipo = obtenerSiguienteMarcacion()
+
+        if (!tipo) return
+
+        btnRegistrar.disabled = true
+
+        try {
+
+            const resultado = await llamarApi(
+                '/api/marcaciones',
+                'POST',
+                { tipo }
+            )
+
+            alert(resultado.message)
+
+            // Volver a consultar los datos del servidor
+            await cargarAsistencia()
+
+        } catch (error) {
+
+            alert(error.message)
+            btnRegistrar.disabled = false
+
+        }
+    }
+
+    // EVENTO DEL BOTÓN
+    btnRegistrar.addEventListener('click', registrarMarcacion)
+
+    // INICIALIZAR PANTALLA
+    await cargarUsuario()
+    await cargarAsistencia()
 }

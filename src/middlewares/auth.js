@@ -34,7 +34,7 @@ exports.verifyToken = async (req, res, next) => {
   //Se consulta al a BD para respetar usuarios desactivados
 
   const user = await db("usuarios").where({ idusuario : payload.idusuario })
-  .select('idusuario', 'nombre_usuario', 'nivel_acceso', 'estado').first()
+  .select('idusuario', 'idpersona', 'nombre_usuario', 'nivel_acceso', 'estado').first()
 
   if (!user || !user.estado){
     return unauthorized(res, 'Usuario inactivo o inexistente')

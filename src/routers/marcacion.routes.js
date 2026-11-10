@@ -1,9 +1,10 @@
 const router = require('express').Router()
 const c = require('../controllers/marcacion.controller')
-const {requireLevel} =require('../middlewares/auth')
+const {verifyToken, requireLevel} =require('../middlewares/auth')
 
 
 router.get('/', c.list)
+router.get('/hoy', verifyToken, c.today)
 router.get('/:id', c.get)
 router.post('/', c.create)
 router.put('/:id', requireLevel('ADMIN'), c.update)

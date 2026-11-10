@@ -7,11 +7,12 @@ exports.up = async function(knex) {
     t.increments('idmarcacion').primary()
     t.integer('idcontrato').unsigned().notNullable().references('idcontrato').inTable('contratos').onDelete('RESTRICT').onUpdate('CASCADE')
     t.date('fecha').notNullable()
-    t.string('dia', 10).notNullable()
+    t.string('dia', 15).notNullable()
     t.time('entrada')
     t.time('inicio_ref')
     t.time('fin_ref')
     t.time('salida')
+    t.unique(['idcontrato', 'fecha'])
     t.timestamps(true, true)
   })
 };

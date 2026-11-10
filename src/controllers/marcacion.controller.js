@@ -1,8 +1,30 @@
 const db = require('../config/db')
-const { httpError, requireFields } = require('../utils')
+const { httpError, requireFields, validarDiaLaboral } = require('../utils')
+
+const obtenerFechaHora = () => {
+    const partes = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Lima',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hourCycle: 'h23'
+    }).formatToParts(new Date())
+
+    const valor = (tipo) => partes.find(p => p.type === tipo).value
+
+    return {
+        fecha: `${valor('year')}-${valor('month')}-${valor('day')}`,
+        hora: `${valor('hour')}:${valor('minute')}:${valor('second')}`
+    }
+}
+
+
 
 // Campos permitidos para registrar y actualizar marcaciones
-const camposNecesarios = ['idcontrato', 'fecha', 'dia', 'entrada', 'inicio_ref', 'fin_ref', 'salida']
+const camposNecesarios = ['idcontrato', 'fecha', 'entrada', 'inicio_ref', 'fin_ref', 'salida']
 
 // Filtrar los campos recibidos y limpiar strings vacíos a nulos en horas opcionales
 const pick = (body) => {
@@ -67,16 +89,62 @@ exports.get = async (req, res) => {
     res.json(marcacion)
 }
 
+
 // REGISTRAR MARCACIÓN
 exports.create = async (req, res) => {
-    const datos = pick(req.body)
+    const { tipo } = req.body
+    const tipos = ['entrada', 'inicio_ref', 'fin_ref', 'salida']
 
-    requireFields(datos, ['idcontrato', 'fecha', 'dia'])
-    await checkRelaciones(datos)
+    if (!tipos.includes(tipo))  throw httpError(400, 'Tipo de marcación no válido')
+    
+    const { fecha, hora } = obtenerFechaHora()
+    // Buscar contrato activo
+    const contrato = await db('contratos')
+        .where({idpersona: req.user.idpersona, estado: true })
+        .where('fecha_inicio', '<=', fecha)
+        .where((q) => q.whereNull('fecha_fin').orWhere('fecha_fin', '>=', fecha))
+        .first()
+    if (!contrato) throw httpError(404, 'No tienes un contrato activo')
+    // Buscar horario asignado
+    const horario = await db('horarios')
+        .where({ idcontrato: contrato.idcontrato })
+        .first()
 
-    const [idmarcacion] = await db('marcaciones').insert(datos)
-    res.status(201).json({ idmarcacion, message: 'Marcación registrada correctamente' })
+    if (!horario) throw httpError(404, 'No tienes un horario asignado')
+
+    // Validar día laboral
+    const dia = validarDiaLaboral(horario.dia, fecha)
+    if (!dia) throw httpError(400, 'Hoy no corresponde a un día laboral')
+    // Buscar marcación del día
+    const marcacion = await db('marcaciones')
+        .where({ idcontrato: contrato.idcontrato, fecha })
+        .first()
+    // Definir marcación anterior
+    const anterior = {
+        entrada: null,
+        inicio_ref: 'entrada',
+        fin_ref: 'inicio_ref',
+        salida: 'fin_ref'
+    }
+
+    if (!marcacion && tipo !== 'entrada')  throw httpError(400, 'Primero debes registrar tu entrada')
+    // Crear registro inicial
+    if (!marcacion) {
+        const datos = { idcontrato: contrato.idcontrato,fecha,dia,entrada: hora }
+        const [idmarcacion] = await db('marcaciones').insert(datos)
+        return res.status(201).json({idmarcacion, tipo, hora, message: 'Entrada registrada correctamente'})
+    }
+
+    // Validar duplicados y orden
+    const campoAnterior = anterior[tipo]
+
+    if (marcacion[tipo]) throw httpError(400, 'Esta marcación ya fue registrada')
+    if (campoAnterior && hora <= marcacion[campoAnterior])  throw httpError(400, 'La hora debe ser posterior a la marcación anterior') 
+    // Actualizar marcación
+    await db('marcaciones').where({ idmarcacion: marcacion.idmarcacion }).update({ [tipo]: hora })
+    res.json({idmarcacion: marcacion.idmarcacion, tipo, hora, message: 'Marcación registrada correctamente'})
 }
+
 
 // ACTUALIZAR MARCACIÓN
 exports.update = async (req, res) => {
@@ -98,6 +166,25 @@ exports.update = async (req, res) => {
         .where({ idmarcacion: req.params.id })
         .update(datos)
     res.json({ message: 'Marcación actualizada correctamente' })
+}
+
+// CONSULTAR ASISTENCIA DEL DÍA
+exports.today = async (req, res) => {
+    const { fecha } = obtenerFechaHora()
+    // Buscar contrato activo
+    const contrato = await db('contratos')
+        .where({ idpersona: req.user.idpersona, estado: true })
+        .where('fecha_inicio', '<=', fecha)
+        .where((q) => q.whereNull('fecha_fin').orWhere('fecha_fin', '>=', fecha))
+        .first()
+    if (!contrato) throw httpError(404, 'No tienes un contrato activo')
+
+    // Consultar marcación del día
+    const marcacion = await baseQuery()
+        .where('m.idcontrato', contrato.idcontrato)
+        .where('m.fecha', fecha)
+        .first()
+    res.json({ fecha, marcacion: marcacion || null})
 }
 
 // ELIMINAR MARCACIÓN

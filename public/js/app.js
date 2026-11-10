@@ -1,7 +1,8 @@
 async function llamarApi(url, metodo, datos){
   const opciones = {
     method: metodo || 'GET',
-    headers: { 'Content-Type':'application/json' }
+    headers: { 'Content-Type':'application/json' },
+    credentials: 'same-origin'
   }
 
   //No siempre se enviaran datos...
@@ -32,11 +33,13 @@ async function iniciar() {
   window.usuarioActual = yo
   document.getElementById('who').textContent = `${yo.nombres} ${yo.apellidos} (${yo.nivel_acceso})`
 
-
+  if (typeof cargarPersonas === 'function') {
+    await cargarPersonas()
+   }
   //Si eres un ADMIN deberias poder ver otras funciones...
 
   //Rutina que se ejecuta una vez iniciemos sesion
-  cargarPersonas()
+ 
 
 }
 

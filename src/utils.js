@@ -41,3 +41,34 @@ exports.checkCredentials = (
       "La contraseña debe tener entre 8 y 72 caracteres",
     );
 };
+
+// Validar si una fecha corresponde a un día laboral
+exports.validarDiaLaboral = (rango, fecha) => {
+  const diasSemana = [
+    'Domingo',
+    'Lunes',
+    'Martes',
+    'Miercoles',
+    'Jueves',
+    'Viernes',
+    'Sabado'
+  ]
+
+  const diasLaborales = {
+    'Lunes a Viernes': [1, 2, 3, 4, 5],
+    'Lunes a Sabado': [1, 2, 3, 4, 5, 6],
+    'Todos los dias': [0, 1, 2, 3, 4, 5, 6]
+  }
+
+  const [anio, mes, dia] = fecha.split('-').map(Number)
+
+  const numeroDia = new Date(
+    Date.UTC(anio, mes - 1, dia)
+  ).getUTCDay()
+
+  const diaActual = diasSemana[numeroDia]
+
+  return diasLaborales[rango]?.includes(numeroDia)
+    ? diaActual
+    : null
+}
