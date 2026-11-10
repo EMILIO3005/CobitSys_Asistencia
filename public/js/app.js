@@ -47,6 +47,12 @@ async function cerrarSesion(){
   await llamarApi('/api/auth/logout', 'POST')
   window.location.href = '/login.html'
 }
+
+function marcarMenuActivo(item) {
+  document.querySelectorAll('.sidebar .nav-item').forEach((el) => el.classList.remove('active'))
+  item.classList.add('active')
+}
+
 async function cargarPagina(url) {
   const mainContent = document.getElementById('mainContent')
 
@@ -68,10 +74,19 @@ async function cargarPagina(url) {
   }
 }
 
+
+const contenidoDashboard = document.getElementById('mainContent').innerHTML
 //Manejador de eventos
 document.getElementById("logout").addEventListener("click", cerrarSesion)
+document.getElementById('menuDashboard').addEventListener('click', (e) => {
+  e.preventDefault()
+  marcarMenuActivo(e.currentTarget)
+  document.getElementById('mainContent').innerHTML = contenidoDashboard
+})
+
 document.getElementById('menuAsistencia').addEventListener('click', (e) => {
   e.preventDefault()
+  marcarMenuActivo(e.currentTarget)
   cargarPagina('/asistencia.html')
 })
 iniciar()
