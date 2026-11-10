@@ -1,0 +1,99 @@
+<link rel="stylesheet" href="/css/asistencia.css">
+<main class="asistencia-content">
+    <header class="asistencia-header">
+        <h1>Registro de asistencia</h1>
+        <p>Registra tu asistencia o consulta la de otro empleado.</p>
+    </header>
+
+    <!-- TARJETAS PRINCIPALES -->
+    <div class="tarjetas-principales">
+
+        <!-- MI ASISTENCIA -->
+        <section class="tarjeta mi-asistencia">
+            <div class="photo">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="info">
+                <h2 id="nombreUsuario"></h2>
+                <p class="rol" id="rolUsuario"></p>
+                <div class="date" id="fechaActual"></div>
+                <div class="clock" id="hora"></div>
+                <span class="estado-badge" id="estadoAsistencia">Aún sin marcar hoy</span>
+
+                <div class="horarios-asistencia" id="horarioAsistencia">
+                    <div class="horario-item" data-tipo="entrada">
+                        <span>Entrada</span>
+                        <strong id="horaEntrada">Pendiente</strong>
+                    </div>
+                    <div class="horario-item" data-tipo="inicio_ref">
+                        <span>Inicio refrigerio</span>
+                        <strong id="horaInicioRef">Pendiente</strong>
+                    </div>
+                    <div class="horario-item" data-tipo="fin_ref">
+                        <span>Fin refrigerio</span>
+                        <strong id="horaFinRef">Pendiente</strong>
+                    </div>
+                    <div class="horario-item" data-tipo="salida">
+                        <span>Salida</span>
+                        <strong id="horaSalida">Pendiente</strong>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-principal" id="btnRegistrar" disabled></button>
+            </div>
+        </section>
+
+        <!-- CONSULTAR OTRO USUARIO -->
+        <section class="tarjeta consultar">
+            <div class="icono-busqueda">
+                <i class="bi bi-search"></i>
+            </div>
+            <h3>Consultar otro usuario</h3>
+            <p>
+                Busca a un empleado por su nombre. Al seleccionarlo, sus datos
+                se cargan automáticamente y puedes registrar su asistencia.
+            </p>
+            <div class="search-user">
+                <input type="search" id="buscarUsuario" placeholder="Buscar empleado" autocomplete="off">
+                <div id="resultadoBusqueda"></div>
+            </div>
+            <div class="acciones">
+                <button type="button" class="btn-outline" id="btnConsultar">Consultar usuario</button>
+                <button type="button" class="btn-principal" id="qrOpen">
+                    <i class="bi bi-qr-code-scan"></i> Escanear QR
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- ASISTENCIAS DEL DÍA -->
+    <section class="asistencias-dia">
+        <div class="asistencias-titulo">
+            <h3>Asistencias marcadas hoy</h3>
+            <span><span id="cantidadEmpleados">0</span> empleados</span>
+        </div>
+        <div class="lista-asistencias" id="listaAsistencias"></div>
+    </section>
+</main>
+
+<!-- PLANTILLA DINÁMICA DE EMPLEADOS -->
+<template id="plantillaEmpleado">
+    <article class="empleado-item">
+        <div class="empleado-photo">
+            <img data-campo="foto" alt="Foto del empleado" hidden>
+            <i class="bi bi-person-fill" data-campo="icono"></i>
+        </div>
+        <div class="empleado-body">
+            <h4 data-campo="nombre"></h4>
+            <p class="cargo" data-campo="cargo"></p>
+            <span class="fecha" data-campo="fecha"></span>
+
+            <div class="empleado-horarios">
+                <div class="marca"><span>Entrada</span><strong data-campo="entrada"></strong></div>
+                <div class="marca"><span>Ini. refrigerio</span><strong data-campo="inicio_ref"></strong></div>
+                <div class="marca"><span>Fin refrigerio</span><strong data-campo="fin_ref"></strong></div>
+                <div class="marca"><span>Salida</span><strong data-campo="salida"></strong></div>
+            </div>
+        </div>
+    </article>
+</template>

@@ -1,0 +1,159 @@
+.asistencia-content {
+    --asist-azul: #1e4fa2;
+    --asist-azul-claro: #dbe6f7;
+    --asist-azul-icono: #8fa6cf;
+    --asist-fondo: #f3f6fb;
+    --asist-texto: #0f1e3d;
+    --asist-gris: #5f6b80;
+    --asist-borde: #dde4ef;
+
+    background: var(--asist-fondo);
+    color: var(--asist-texto);
+    font-family: "Inter", system-ui, sans-serif;
+    padding: 24px;
+    max-width: 1360px;
+
+    [hidden] { display: none !important; }
+
+    .asistencia-header {
+        h1 { font-size: 1.9rem; font-weight: 700; margin: 0; }
+        p  { color: var(--asist-gris); margin: 4px 0 24px; }
+    }
+
+    .tarjetas-principales {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 30px;
+        margin-bottom: 36px;
+    }
+
+    .tarjeta {
+        background: #fff;
+        border: 1px solid var(--asist-borde);
+        border-radius: 18px;
+        padding: 38px;
+    }
+
+    /* Mi asistencia */
+    .mi-asistencia {
+        display: flex; gap: 34px; align-items: flex-start;
+
+        .photo {
+            flex: 0 0 238px; height: 287px;
+            background: var(--asist-azul-claro);
+            border-radius: 14px; overflow: hidden;
+            display: flex; align-items: flex-end; justify-content: center;
+            i { font-size: 15rem; line-height: 1; margin-bottom: -2.2rem; color: var(--asist-azul-icono); }
+        }
+        .info { flex: 1; min-width: 0; }
+        h2 { font-size: 1.5rem; font-weight: 700; margin: 0; }
+        .rol { color: var(--asist-gris); font-size: 1.1rem; margin: 2px 0 14px; }
+        .date { color: var(--asist-gris); }
+        .clock { font-size: 3.4rem; font-weight: 800; line-height: 1.1; }
+        .btn-principal { width: 100%; margin-top: 20px; padding: 18px; }
+    }
+
+    .estado-badge {
+        display: inline-block;
+        background: #fdf0c4; color: #8a5a00;
+        font-size: .85rem; font-weight: 600;
+        padding: 4px 12px; border-radius: 999px;
+        margin: 6px 0 14px;
+    }
+
+    .horarios-asistencia {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    }
+    .horario-item {
+        border: 1px solid var(--asist-borde);
+        border-radius: 10px; padding: 8px 10px;
+        font-size: .8rem; color: var(--asist-gris);
+        display: flex; flex-direction: column; gap: 2px;
+
+        strong { font-size: .95rem; color: #9aa5b8; }
+        &.activo { border-color: var(--asist-azul); color: var(--asist-texto); }
+        &.completo strong { color: var(--asist-texto); }
+    }
+
+    .btn-principal, .btn-outline {
+        border-radius: 10px; padding: 14px 22px;
+        font-weight: 600; font-size: 1rem; cursor: pointer;
+        transition: opacity .15s;
+    }
+    .btn-principal {
+        background: var(--asist-azul); color: #fff;
+        border: 1px solid var(--asist-azul);
+        &:disabled { opacity: .55; cursor: not-allowed; }
+    }
+    .btn-outline {
+        background: #fff; color: var(--asist-azul);
+        border: 1px solid var(--asist-azul);
+    }
+
+    /* Consultar otro usuario */
+    .icono-busqueda {
+        width: 70px; height: 70px;
+        background: #dff1f6; color: #2a8fb0;
+        border-radius: 14px; display: grid; place-items: center;
+        font-size: 1.6rem; margin-bottom: 24px;
+    }
+    .consultar {
+        h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; }
+        p  { color: var(--asist-gris); line-height: 1.6; }
+    }
+    .search-user {
+        position: relative; margin-top: 18px;
+        input {
+            width: 100%; padding: 12px 14px;
+            border: 1px solid var(--asist-borde); border-radius: 10px;
+        }
+    }
+    .acciones { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 18px; }
+
+    /* Asistencias del día */
+    .asistencias-titulo {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 14px;
+        h3 { font-size: 1.3rem; font-weight: 700; margin: 0; }
+        > span { color: var(--asist-gris); font-size: .95rem; }
+    }
+    .lista-asistencias {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+        gap: 26px;
+    }
+    .empleado-item {
+        background: #fff;
+        border: 1px solid var(--asist-borde);
+        border-radius: 14px; overflow: hidden;
+    }
+    .empleado-photo {
+        height: 120px; background: var(--asist-azul-claro);
+        display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+        i { font-size: 8rem; line-height: 1; margin-bottom: -1.6rem; color: var(--asist-azul-icono); }
+        img { width: 100%; height: 100%; object-fit: cover; }
+    }
+    .empleado-body {
+        padding: 18px 20px 20px;
+        h4 { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+        .cargo, .fecha { display: block; color: var(--asist-gris); font-size: .9rem; margin: 0 0 4px; }
+    }
+    .empleado-horarios {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;
+    }
+    .marca {
+        background: var(--asist-fondo); border-radius: 8px; padding: 8px 10px;
+        display: flex; flex-direction: column;
+        span { font-size: .75rem; color: var(--asist-gris); }
+        strong { font-size: .95rem; }
+    }
+}
+
+@media (max-width: 1100px) {
+    .asistencia-content .tarjetas-principales { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+    .asistencia-content .mi-asistencia { flex-direction: column; }
+    .asistencia-content .mi-asistencia .photo { width: 100%; flex-basis: auto; height: 220px; }
+    .asistencia-content .horarios-asistencia { grid-template-columns: repeat(2, 1fr); }
+}

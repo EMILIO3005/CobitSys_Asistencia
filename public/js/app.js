@@ -28,6 +28,8 @@ async function llamarApi(url, metodo, datos){
 
 async function iniciar() {
   const yo = await llamarApi('/api/auth/me')
+
+  window.usuarioActual = yo
   document.getElementById('who').textContent = `${yo.nombres} ${yo.apellidos} (${yo.nivel_acceso})`
 
 
@@ -40,9 +42,33 @@ async function iniciar() {
 
 async function cerrarSesion(){
   await llamarApi('/api/auth/logout', 'POST')
-  window,location.href = '/login.html'
+  window.location.href = '/login.html'
+}
+async function cargarPagina(url) {
+  const mainContent = document.getElementById('mainContent')
+
+  try {
+    const respuesta = await fetch(url)
+    if (!respuesta.ok) { throw new Error(`Error ${respuesta.status}: No se pudo cargar la página`) }
+
+    mainContent.innerHTML = await respuesta.text()
+
+    if (url === '/asistencia.html') { await window.iniciarAsistencia?.() }
+  } catch (error) {
+    console.error('Error al cargar la página:', error)
+
+    mainContent.innerHTML = `
+      <div class="alert alert-danger">
+        ${error.message}
+      </div>
+    `
+  }
 }
 
 //Manejador de eventos
 document.getElementById("logout").addEventListener("click", cerrarSesion)
+document.getElementById('menuAsistencia').addEventListener('click', (e) => {
+  e.preventDefault()
+  cargarPagina('/asistencia.html')
+})
 iniciar()
