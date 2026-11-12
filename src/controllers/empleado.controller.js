@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs')
 const db = require('../config/db')
 const { httpError, requireFields, isEmail, checkCredentials } = require('../utils')
 
-// CAMPOS PERMITIDOS
 const camposPersona = [
     'apellidos', 'nombres', 'tipodoc',
     'numdoc', 'fechanac', 'direccion',
@@ -14,7 +13,6 @@ const camposContrato = [
     'fecha_inicio', 'fecha_fin', 'estado'
 ]
 
-// FILTRAR CAMPOS
 const pick = (body, campos) => Object.fromEntries(
     campos.filter(key => key in body).map(key => [
         key,
@@ -22,7 +20,6 @@ const pick = (body, campos) => Object.fromEntries(
     ])
 )
 
-// VALIDAR DATOS DEL EMPLEADO
 const validarEmpleado = (persona, contrato) => {
 
     if (!isEmail(persona.email)) throw httpError(400, 'El email no es válido')
@@ -37,19 +34,17 @@ const validarEmpleado = (persona, contrato) => {
     }
 }
 
-// VERIFICAR CARGO Y SEDE
 const validarAsignaciones = async (trx, contrato) => {
     const cargo = await trx('cargos')
         .where({ idcargo: contrato.idcargo, estado: true })
         .first()
-
     if (!cargo) throw httpError(404, 'El cargo no existe o está inactivo')
     const sede = await trx('sedes')
         .where({ idsede: contrato.idsede, estado: true })
         .first()
     if (!sede) throw httpError(404, 'La sede no existe o está inactiva')
 }
-// LISTAR EMPLEADOS
+
 exports.list = async (req, res) => {
     const empleados = await db('contratos as c')
         .join('personas as p', 'c.idpersona', 'p.idpersona')
@@ -119,7 +114,6 @@ exports.get = async (req, res) => {
     res.json(empleado)
 }
 // REGISTRAR EMPLEADO
-
 exports.create = async (req, res) => {
     const persona = pick(req.body, camposPersona)
     const contrato = pick(req.body, camposContrato)
@@ -142,12 +136,9 @@ exports.create = async (req, res) => {
     }
 
     const hash = await bcrypt.hash(clave_acceso, 10)
-
     const resultado = await db.transaction(async trx => {
         await validarAsignaciones(trx, contrato)
-
         const [idpersona] = await trx('personas').insert(persona)
-
         const [idcontrato] = await trx('contratos').insert({
             ...contrato,
             idpersona,
@@ -218,7 +209,7 @@ exports.update = async (req, res) => {
                 ...contrato,
                 fecha_fin: contrato.fecha_fin || null,
                 estado: contrato.estado === false ||
-                 contrato.estado === '0' ? false : true
+                contrato.estado === '0' ? false : true
             })
         return {
             idpersona: empleado.idpersona,
@@ -226,7 +217,6 @@ exports.update = async (req, res) => {
             idcontrato: Number(req.params.id)
         }
     })
-
     res.json({ ...resultado, message: 'Empleado actualizado correctamente' })
 }
 
@@ -244,14 +234,13 @@ exports.remove = async (req, res) => {
             .where({ idpersona })
             .whereNot('idcontrato', req.params.id)
             .first()
+            
         // ELIMINAR CONTRATO
         await trx('contratos')
             .where({ idcontrato: req.params.id })
             .del()
-        // SI TIENE OTROS CONTRATOS, CONSERVAR PERSONA Y USUARIO
         if (otrosContratos) return
 
-        // ELIMINAR USUARIO
         await trx('usuarios')
             .where({ idpersona })
             .del()

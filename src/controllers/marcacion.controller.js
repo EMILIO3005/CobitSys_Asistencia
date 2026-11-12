@@ -23,10 +23,8 @@ const obtenerFechaHora = () => {
 
 
 
-// Campos permitidos para registrar y actualizar marcaciones
 const camposNecesarios = ['idcontrato', 'fecha', 'entrada', 'inicio_ref', 'fin_ref', 'salida']
 
-// Filtrar los campos recibidos y limpiar strings vacíos a nulos en horas opcionales
 const pick = (body) => {
     return Object.fromEntries(
         camposNecesarios.filter((key) => key in body).map(
@@ -42,7 +40,6 @@ const pick = (body) => {
     )
 }
 
-// Consulta base con información relacionada (Contrato -> Persona -> Cargo)
 const baseQuery = () => {
     return db('marcaciones as m')
         .join('contratos as co', 'co.idcontrato', 'm.idcontrato')
@@ -65,7 +62,6 @@ const baseQuery = () => {
         )
 }
 
-// Verificar que exista la relación con el contrato
 const checkRelaciones = async (datos) => {
     const contrato = await db('contratos')
         .where({ idcontrato: datos.idcontrato })
@@ -112,14 +108,15 @@ exports.create = async (req, res) => {
 
     if (!horario) throw httpError(404, 'No tienes un horario asignado')
 
-    // Validar día laboral
     const dia = validarDiaLaboral(horario.dia, fecha)
     if (!dia) throw httpError(400, 'Hoy no corresponde a un día laboral')
-    // Buscar marcación del día
+
+   
     const marcacion = await db('marcaciones')
         .where({ idcontrato: contrato.idcontrato, fecha })
         .first()
-    // Definir marcación anterior
+    
+
     const anterior = {
         entrada: null,
         inicio_ref: 'entrada',
@@ -128,19 +125,16 @@ exports.create = async (req, res) => {
     }
 
     if (!marcacion && tipo !== 'entrada')  throw httpError(400, 'Primero debes registrar tu entrada')
-    // Crear registro inicial
     if (!marcacion) {
         const datos = { idcontrato: contrato.idcontrato,fecha,dia,entrada: hora }
         const [idmarcacion] = await db('marcaciones').insert(datos)
         return res.status(201).json({idmarcacion, tipo, hora, message: 'Entrada registrada correctamente'})
     }
 
-    // Validar duplicados y orden
     const campoAnterior = anterior[tipo]
 
     if (marcacion[tipo]) throw httpError(400, 'Esta marcación ya fue registrada')
     if (campoAnterior && hora <= marcacion[campoAnterior])  throw httpError(400, 'La hora debe ser posterior a la marcación anterior') 
-    // Actualizar marcación
     await db('marcaciones').where({ idmarcacion: marcacion.idmarcacion }).update({ [tipo]: hora })
     res.json({idmarcacion: marcacion.idmarcacion, tipo, hora, message: 'Marcación registrada correctamente'})
 }
@@ -179,7 +173,7 @@ exports.today = async (req, res) => {
         .first()
     if (!contrato) throw httpError(404, 'No tienes un contrato activo')
 
-    // Consultar marcación del día
+        
     const marcacion = await baseQuery()
         .where('m.idcontrato', contrato.idcontrato)
         .where('m.fecha', fecha)

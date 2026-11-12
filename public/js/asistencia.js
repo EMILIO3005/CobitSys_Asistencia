@@ -2,7 +2,6 @@
 let intervaloReloj = null
 window.iniciarAsistencia = async function () {
 
-    // ELEMENTOS DEL HTML
     const nombreUsuario = document.getElementById('nombreUsuario')
     const rolUsuario = document.getElementById('rolUsuario')
     const fechaActual = document.getElementById('fechaActual')
@@ -17,7 +16,6 @@ window.iniciarAsistencia = async function () {
         salida: document.getElementById('horaSalida')
     }
 
-    // CONFIGURACIÓN DE MARCACIONES
     const tipos = {
         entrada: {
             siguiente: 'inicio_ref',
@@ -45,7 +43,6 @@ window.iniciarAsistencia = async function () {
         return String(hora).substring(0, 8)
     }
 
-    // RELOJ EN TIEMPO REAL
     function actualizarReloj() {
         const ahora = new Date()
 
@@ -72,7 +69,6 @@ window.iniciarAsistencia = async function () {
 
     intervaloReloj = setInterval(actualizarReloj, 1000)
 
-    // LLAMAR API
     async function llamarApi(url, metodo = 'GET', datos = null) {
         const opciones = {
             method: metodo,
@@ -88,11 +84,9 @@ window.iniciarAsistencia = async function () {
         return resultado
     }
 
-    // CARGAR INFORMACIÓN DEL USUARIO
     async function cargarUsuario() {
         try {
             const datos = await llamarApi('/api/auth/me')
-            // Admite las estructuras habituales de respuesta
             const usuario = datos.usuario || datos.yo || datos
             nombreUsuario.textContent =
                 `${usuario.nombres || ''} ${usuario.apellidos || ''}`.trim()
@@ -103,7 +97,6 @@ window.iniciarAsistencia = async function () {
         }
     }
 
-    // MOSTRAR MARCACIONES
     function mostrarMarcaciones(marcacion) {
         marcacionActual = marcacion
         Object.keys(horas).forEach(tipo => {
@@ -112,7 +105,6 @@ window.iniciarAsistencia = async function () {
         actualizarEstado()
     }
 
-    // DETERMINAR SIGUIENTE MARCACIÓN
     function obtenerSiguienteMarcacion() {
         if (!marcacionActual || !marcacionActual.entrada) { return 'entrada' }
         if (!marcacionActual.inicio_ref) { return 'inicio_ref' }
@@ -121,7 +113,6 @@ window.iniciarAsistencia = async function () {
         return null
     }
 
-    // ACTUALIZAR ESTADO Y BOTÓN
     function actualizarEstado() {
         const siguiente = obtenerSiguienteMarcacion()
         if (!siguiente) {
@@ -141,12 +132,9 @@ window.iniciarAsistencia = async function () {
         btnRegistrar.disabled = false
     }
 
-    // CONSULTAR ASISTENCIA DEL DÍA
     async function cargarAsistencia() {
-
         try {
             const datos = await llamarApi('/api/marcaciones/hoy')
-
             mostrarMarcaciones(datos.marcacion)
 
         } catch (error) {
@@ -185,21 +173,15 @@ async function cargarListaAsistencias() {
             return String(fecha).substring(0, 10)
         }
 
-        // Filtrar marcaciones del día
         const asistenciasHoy = marcaciones.filter(m =>
             normalizarFecha(m.fecha) === fechaHoy
         )
-        // Actualizar contador
         cantidad.textContent = asistenciasHoy.length
-        // Limpiar tarjetas anteriores
         lista.replaceChildren()
-
-        // Si no existen registros
         if (asistenciasHoy.length === 0) {
             lista.textContent = 'No hay asistencias registradas hoy.'
             return
         }
-        // Generar tarjetas
         asistenciasHoy.forEach(m => {
             const tarjeta = plantilla.content.cloneNode(true)
             const campos = {
@@ -211,7 +193,6 @@ async function cargarListaAsistencias() {
                 fin_ref: obtenerHora(m.fin_ref),
                 salida: obtenerHora(m.salida)
             }
-            // Asignar información a la plantilla
             Object.entries(campos).forEach(([campo, valor]) => {
                 const elemento = tarjeta.querySelector( `[data-campo="${campo}"]` )
                 if (elemento) { elemento.textContent = valor }
@@ -225,8 +206,6 @@ async function cargarListaAsistencias() {
     }
 }
 
-
-    // REGISTRAR MARCACIÓN
     async function registrarMarcacion() {
         const tipo = obtenerSiguienteMarcacion()
         if (!tipo) return
@@ -239,7 +218,6 @@ async function cargarListaAsistencias() {
                 { tipo }
             )
             alert(resultado.message)
-            // Volver a consultar los datos del servidor
             await cargarAsistencia()
         } catch (error) {
             alert(error.message)
@@ -247,11 +225,8 @@ async function cargarListaAsistencias() {
 
         }
     }
-
-    // EVENTO DEL BOTÓN
     btnRegistrar.addEventListener('click', registrarMarcacion)
 
-    // INICIALIZAR PANTALLA
     await cargarUsuario()
     await cargarAsistencia()
     await cargarListaAsistencias()

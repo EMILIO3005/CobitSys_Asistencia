@@ -8,7 +8,6 @@ function mostrarMensajeEmpleado(mensaje, tipo = 'success') {
     contenedor.style.display = 'block'
 }
 
-// CARGAR OPCIONES DE LOS SELECT
 async function cargarOpcionesEmpleado(url, idSelect, campoId, campoTexto) {
     const select = document.getElementById(idSelect)
     try {
@@ -27,7 +26,6 @@ async function cargarOpcionesEmpleado(url, idSelect, campoId, campoTexto) {
     }
 }
 
-// LISTAR EMPLEADOS
 async function cargarEmpleados() {
     const cuerpo = document.getElementById('cuerpoEmpleados')
     try {
@@ -82,7 +80,6 @@ async function cargarEmpleados() {
     }
 }
 
-// REGISTRAR O ACTUALIZAR
 async function guardarEmpleado(event) {
     event.preventDefault()
     const formulario = document.getElementById('formEmpleado')
@@ -123,24 +120,19 @@ async function guardarEmpleado(event) {
     }
 }
 
-// EDITAR EMPLEADO
 async function editarEmpleado(id) {
     try {
         const respuesta = await llamarApi(`/api/empleados/${id}`)
         const empleado = respuesta.data || respuesta
 
         idEmpleadoEditando = id
-
         const formulario = document.getElementById('formEmpleado')
         Object.keys(empleado).forEach(campo => {
             const elemento = formulario.elements[campo]
-
             if (elemento && empleado[campo] !== null) {
                 elemento.value = empleado[campo]
             }
         })
-
-        // La contraseña no se modifica si queda vacía
         formulario.elements.clave_acceso.value = ''
         formulario.elements.clave_acceso.required = false
 
@@ -167,15 +159,13 @@ async function eliminarEmpleado(id) {
 
     try {
         const respuesta = await llamarApi(`/api/empleados/${id}`, 'DELETE')
-        mostrarMensajeEmpleado(
-            respuesta.message || 'Empleado eliminado correctamente.'
-        )
+        mostrarMensajeEmpleado(respuesta.message || 'Empleado eliminado correctamente.')
         await cargarEmpleados()
     } catch (error) {
         mostrarMensajeEmpleado(error.message, 'error')
     }
 }
-// LIMPIAR FORMULARIO
+
 function limpiarFormularioEmpleado() {
     const formulario = document.getElementById('formEmpleado')
     formulario.reset()
@@ -186,10 +176,8 @@ function limpiarFormularioEmpleado() {
     document.getElementById('btnGuardarEmpleado').textContent = 'Guardar empleado'
 }
 
-// INICIALIZAR MÓDULO
 window.iniciarEmpleado = async function () {
     const formulario = document.getElementById('formEmpleado')
-
     formulario.addEventListener('submit', guardarEmpleado)
     formulario.addEventListener('reset', () => {
         idEmpleadoEditando = null
