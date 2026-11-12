@@ -10,7 +10,11 @@
     --emp-radius: 10px;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
@@ -28,7 +32,7 @@ body {
 }
 
 /* Encabezado */
-.emp-header { 
+.emp-header {
     margin-bottom: 24px;
     text-align: left;
 }
@@ -58,6 +62,7 @@ body {
     margin-bottom: 24px;
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
 }
+
 .emp-form {
     width: 100%;
 }
@@ -80,9 +85,17 @@ body {
     gap: 16px;
 }
 
-.emp-col-4  { grid-column: span 4; }
-.emp-col-6  { grid-column: span 6; }
-.emp-col-12 { grid-column: span 12; }
+.emp-col-4 {
+    grid-column: span 4;
+}
+
+.emp-col-6 {
+    grid-column: span 6;
+}
+
+.emp-col-12 {
+    grid-column: span 12;
+}
 
 /* Contrato: 2 columnas */
 .emp-grid-2 {
@@ -97,10 +110,16 @@ body {
     align-items: stretch;
 }
 
-.emp-split .emp-card { margin-bottom: 0; }
+.emp-split .emp-card {
+    margin-bottom: 0;
+}
 
 /* Campos */
-.emp-field { display: flex; flex-direction: column; min-width: 0; }
+.emp-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
 
 .emp-label {
     margin-bottom: 6px;
@@ -122,7 +141,9 @@ body {
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.emp-input::placeholder { color: var(--emp-placeholder); }
+.emp-input::placeholder {
+    color: var(--emp-placeholder);
+}
 
 .emp-input:focus {
     outline: 0;
@@ -147,8 +168,14 @@ body {
 }
 
 /* Mensajes */
-.emp-mensaje:empty { display: none; }
-.emp-mensaje { margin-bottom: 16px; font-size: 0.85rem; }
+.emp-mensaje:empty {
+    display: none;
+}
+
+.emp-mensaje {
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+}
 
 /* Barra de botones */
 .emp-actions {
@@ -177,25 +204,229 @@ body {
     color: #374151;
     border-color: var(--emp-border);
 }
-.emp-btn-light:hover { background: #f3f4f6; }
+
+.emp-btn-light:hover {
+    background: #f3f4f6;
+}
 
 .emp-btn-primary {
     background: var(--emp-primary);
     border-color: var(--emp-primary);
     color: #fff;
 }
+
 .emp-btn-primary:hover:not(:disabled) {
     background: var(--emp-primary-hover);
     border-color: var(--emp-primary-hover);
 }
-.emp-btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
 
-/* Responsive */
+.emp-btn-primary:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+
+
+/* ==============================
+   LISTADO DE EMPLEADOS
+============================== */
+
+.emp-listado {
+    margin-top: 28px;
+}
+
+.emp-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.emp-card-title {
+    margin: 0 0 6px;
+    color: var(--emp-text);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.emp-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.emp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    color: var(--emp-text);
+    white-space: nowrap;
+}
+
+.emp-table thead {
+    background: #f1f5fa;
+}
+
+.emp-table th {
+    padding: 13px 14px;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #526176;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--emp-border);
+}
+
+.emp-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--emp-border);
+    vertical-align: middle;
+}
+
+.emp-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.emp-table tbody tr:hover {
+    background: #f7f9fc;
+}
+
+.emp-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ==============================
+   BOTONES DE ACCIONES
+============================== */
+
+.emp-table td:last-child {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.emp-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.emp-btn-light {
+    background: #eaf1fa;
+    color: #1d56a5;
+}
+
+.emp-btn-light:hover {
+    background: #d8e6f8;
+}
+
+.emp-btn-danger {
+    background: #fdecec;
+    color: #c62828;
+}
+
+.emp-btn-danger:hover {
+    background: #fbd5d5;
+}
+
+.emp-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+.emp-mensaje {
+    display: none;
+    margin: 15px 0;
+    padding: 12px 15px;
+    border-radius: 7px;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.emp-mensaje.success {
+    display: block;
+    color: #176b3a;
+    background: #e8f6ed;
+    border: 1px solid #bce5ca;
+}
+
+.emp-mensaje.error {
+    display: block;
+    color: #a32020;
+    background: #fdecec;
+    border: 1px solid #f3c4c4;
+}
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
 @media (max-width: 767.98px) {
-    .emp-container { padding: 20px 14px 0; }
-    .emp-card { padding: 18px 16px 20px; }
-    .emp-col-4, .emp-col-6 { grid-column: span 12; }
-    .emp-split { grid-template-columns: 1fr; gap: 24px; }
-    .emp-split .emp-card { margin-bottom: 0; }
-    .emp-actions { margin: 0 -14px; padding: 16px 14px; }
+
+    /* Contenedor */
+    .emp-container {
+        padding: 20px 14px 0;
+    }
+
+    /* Tarjetas */
+    .emp-card {
+        padding: 18px 16px 20px;
+    }
+
+    .emp-listado {
+        padding: 16px;
+    }
+
+    /* Formularios */
+    .emp-col-4,
+    .emp-col-6 {
+        grid-column: span 12;
+    }
+
+    .emp-split {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .emp-split .emp-card {
+        margin-bottom: 0;
+    }
+
+    /* Botones del formulario */
+    .emp-actions {
+        margin: 0 -14px;
+        padding: 16px 14px;
+    }
+
+    /* Listado */
+    .emp-list-header {
+        align-items: flex-start;
+    }
+
+    .emp-table {
+        font-size: 0.8rem;
+    }
+
+    .emp-table th,
+    .emp-table td {
+        padding: 10px;
+    }
+
+    .emp-table td:last-child {
+        gap: 5px;
+    }
+
+    /* Botones de acciones */
+    .emp-btn {
+        padding: 6px 9px;
+        font-size: 0.73rem;
+    }
 }
