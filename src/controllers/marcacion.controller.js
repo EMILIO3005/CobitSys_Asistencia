@@ -69,9 +69,17 @@ const checkRelaciones = async (datos) => {
     if (!contrato) { throw httpError(404, 'El contrato seleccionado no existe') }
 }
 
-// LISTAR
 exports.list = async (req, res) => {
-    const marcaciones = await baseQuery().orderBy('m.fecha', 'desc').orderBy('m.idmarcacion', 'desc')
+    const query = baseQuery()
+        .orderBy('m.fecha', 'desc')
+        .orderBy('m.idmarcacion', 'desc')
+
+    // Si NO es admin, filtramos solo por su propio idpersona
+    if (req.user.rol !== 'admin') {
+        query.where('p.idpersona', req.user.idpersona)
+    }
+
+    const marcaciones = await query
     res.json(marcaciones)
 }
 
@@ -80,6 +88,9 @@ exports.get = async (req, res) => {
     const marcacion = await baseQuery()
         .where({ 'm.idmarcacion': req.params.id })
         .first()
+
+    if (req.user.rol !== 'admin') {
+        query.where('p.idpersona', req.user.idpersona)}
 
     if (!marcacion) { throw httpError(404, 'Marcación no encontrada') }
     res.json(marcacion)
