@@ -63,6 +63,7 @@ async function cargarPagina(url) {
     mainContent.innerHTML = await respuesta.text()
 
     if (url === '/asistencia.html') { await window.iniciarAsistencia?.() }
+    if (url === '/empleados.html') { await window.iniciarEmpleado?.() }
   } catch (error) {
     console.error('Error al cargar la página:', error)
 
@@ -89,4 +90,11 @@ document.getElementById('menuAsistencia').addEventListener('click', (e) => {
   marcarMenuActivo(e.currentTarget)
   cargarPagina('/asistencia.html')
 })
+
+document.getElementById('menuEmpleados').addEventListener('click', (e) => {
+    e.preventDefault()
+    marcarMenuActivo(e.currentTarget)
+    cargarPagina('/empleados.html')
+})
+
 iniciar()

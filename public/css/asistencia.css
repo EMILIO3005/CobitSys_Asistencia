@@ -16,41 +16,41 @@
     [hidden] { display: none !important; }
 
     .asistencia-header {
-        h1 { font-size: 1.9rem; font-weight: 700; margin: 0; }
-        p  { color: var(--asist-gris); margin: 4px 0 24px; }
+        h1 { font-size: 1.55rem; font-weight: 700; margin: 0; }
+        p  { color: var(--asist-gris); margin: 4px 0 20px; }
     }
 
     .tarjetas-principales {
         display: grid;
         grid-template-columns: 1.25fr 1fr;
-        gap: 30px;
-        margin-bottom: 36px;
+        gap: 20px;
+        margin-bottom: 26px;
     }
 
     .tarjeta {
         background: #fff;
         border: 1px solid var(--asist-borde);
         border-radius: 18px;
-        padding: 38px;
+        padding: 24px;
     }
 
     /* Mi asistencia */
     .mi-asistencia {
-        display: flex; gap: 34px; align-items: flex-start;
+        display: flex; gap: 24px; align-items: flex-start;
 
         .photo {
-            flex: 0 0 238px; height: 287px;
+            flex: 0 0 180px; height: 220px;
             background: var(--asist-azul-claro);
-            border-radius: 14px; overflow: hidden;
+            border-radius: 12px; overflow: hidden;
             display: flex; align-items: flex-end; justify-content: center;
-            i { font-size: 15rem; line-height: 1; margin-bottom: -2.2rem; color: var(--asist-azul-icono); }
+            i { font-size: 11rem; line-height: 1; margin-bottom: -2.2rem; color: var(--asist-azul-icono); }
         }
         .info { flex: 1; min-width: 0; }
-        h2 { font-size: 1.5rem; font-weight: 700; margin: 0; }
-        .rol { color: var(--asist-gris); font-size: 1.1rem; margin: 2px 0 14px; }
-        .date { color: var(--asist-gris); }
-        .clock { font-size: 3.4rem; font-weight: 800; line-height: 1.1; }
-        .btn-principal { width: 100%; margin-top: 20px; padding: 18px; }
+        h2 { font-size: 1.25rem; font-weight: 700; margin: 0; }
+        .rol { color: var(--asist-gris); font-size: .9rem; margin: 2px 0 10px; }
+        .date { color: var(--asist-gris); font-size: .85rem; }
+        .clock { font-size: 2.5rem; font-weight: 800; line-height: 1.1; }
+        .btn-principal { width: 100%; margin-top: 14px; padding: 12px; }
     }
 
     .estado-badge {
@@ -92,14 +92,14 @@
 
     /* Consultar otro usuario */
     .icono-busqueda {
-        width: 70px; height: 70px;
+        width: 56px; height: 56px;
         background: #dff1f6; color: #2a8fb0;
         border-radius: 14px; display: grid; place-items: center;
-        font-size: 1.6rem; margin-bottom: 24px;
+        font-size: 1.3rem; margin-bottom: 18px;
     }
     .consultar {
-        h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; }
-        p  { color: var(--asist-gris); line-height: 1.6; }
+        h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+        p  { color: var(--asist-gris); line-height: 1.5; }
     }
     .search-user {
         position: relative; margin-top: 18px;
@@ -114,13 +114,13 @@
     .asistencias-titulo {
         display: flex; justify-content: space-between; align-items: center;
         margin-bottom: 14px;
-        h3 { font-size: 1.3rem; font-weight: 700; margin: 0; }
-        > span { color: var(--asist-gris); font-size: .95rem; }
+        h3 { font-size: 1.15rem; font-weight: 700; margin: 0; }
+        > span { color: var(--asist-gris); font-size: .85rem; }
     }
     .lista-asistencias {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-        gap: 26px;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 18px;
     }
     .empleado-item {
         background: #fff;

@@ -1,11 +1,177 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
-</html>
+<link rel="stylesheet" href="/css/empleado.css">
+<div class="emp-container">
+
+    <!-- ENCABEZADO -->
+    <header class="emp-header">
+        <h1 class="emp-title">Registrar empleado</h1>
+        <p class="emp-subtitle">
+            Completa los datos personales, la cuenta de acceso, el cargo y el contrato.
+        </p>
+    </header>
+
+    <form id="formEmpleado" class="emp-form">
+
+        <!-- DATOS PERSONALES -->
+        <section class="emp-card">
+            <h2 class="emp-card-title">Datos personales</h2>
+
+            <div class="emp-grid">
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="apellidos">Apellidos</label>
+                    <input class="emp-input" type="text" id="apellidos" name="apellidos"
+                           required maxlength="100" placeholder="Ej. Quispe Huamán">
+                </div>
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="nombres">Nombres</label>
+                    <input class="emp-input" type="text" id="nombres" name="nombres"
+                           required maxlength="100" placeholder="Ej. María Elena">
+                </div>
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="fechanac">Fecha de nacimiento</label>
+                    <input class="emp-input" type="date" id="fechanac" name="fechanac" required>
+                </div>
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="tipodoc">Tipo de documento</label>
+                    <select class="emp-input emp-select" id="tipodoc" name="tipodoc" required>
+                        <option value="DNI" selected>DNI</option>
+                        <option value="CE">Carnet de extranjería</option>
+                    </select>
+                </div>
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="numdoc">N° de documento</label>
+                    <input class="emp-input" type="text" id="numdoc" name="numdoc"
+                           required maxlength="20" placeholder="Ej. 12345678">
+                </div>
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="telefono">Teléfono</label>
+                    <input class="emp-input" type="tel" id="telefono" name="telefono"
+                           required maxlength="20" placeholder="Ej. 987 654 321">
+                </div>
+
+                <div class="emp-field emp-col-6">
+                    <label class="emp-label" for="email">Correo electrónico</label>
+                    <input class="emp-input" type="email" id="email" name="email"
+                           required maxlength="150" placeholder="nombre@empresa.com">
+                </div>
+
+                <div class="emp-field emp-col-6">
+                    <label class="emp-label" for="direccion">Dirección</label>
+                    <input class="emp-input" type="text" id="direccion" name="direccion"
+                           required maxlength="200" placeholder="Dirección del empleado">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CUENTA DE USUARIO -->
+        <section class="emp-card">
+            <h2 class="emp-card-title">Cuenta de usuario</h2>
+
+            <div class="emp-grid">
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="nombre_usuario">Nombre de usuario</label>
+                    <input class="emp-input" type="text" id="nombre_usuario" name="nombre_usuario"
+                           required minlength="3" maxlength="50" placeholder="Ej. mquispe">
+                </div>
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="clave_acceso">Contraseña</label>
+                    <input class="emp-input" type="password" id="clave_acceso" name="clave_acceso"
+                           required minlength="8" maxlength="72" placeholder="Mínimo 8 caracteres">
+                    <small class="emp-hint">Usa letras y números.</small>
+                </div>
+
+                <div class="emp-field emp-col-4">
+                    <label class="emp-label" for="nivel_acceso">Rol</label>
+                    <select class="emp-input emp-select" id="nivel_acceso" name="nivel_acceso" required>
+                        <option value="" selected disabled>Seleccionar rol</option>
+                        <option value="USUARIO">Usuario</option>
+                        <option value="ADMIN">Administrador</option>
+                    </select>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CARGO Y CONTRATO -->
+        <div class="emp-split">
+
+            <!-- CARGO -->
+            <section class="emp-card">
+                <h2 class="emp-card-title">Cargo y sede</h2>
+
+                <div class="emp-field">
+                    <label class="emp-label" for="idcargo">Nombre del cargo</label>
+                    <select class="emp-input emp-select" id="idcargo" name="idcargo" required>
+                        <option value="">Seleccionar cargo</option>
+                    </select>
+                </div>
+
+                <div class="emp-field">
+                    <label class="emp-label" for="idsede">Sede</label>
+                    <select class="emp-input emp-select" id="idsede" name="idsede" required>
+                        <option value="">Seleccionar sede</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- CONTRATO -->
+            <section class="emp-card">
+                <h2 class="emp-card-title">Contrato</h2>
+
+                <div class="emp-grid emp-grid-2">
+
+                    <div class="emp-field">
+                        <label class="emp-label" for="modalidad">Modalidad</label>
+                        <select class="emp-input emp-select" id="modalidad" name="modalidad" required>
+                            <option value="">Seleccionar modalidad</option>
+                            <option value="PRESENCIAL">Presencial</option>
+                            <option value="REMOTO">Remoto</option>
+                        </select>
+                    </div>
+
+                    <div class="emp-field">
+                        <label class="emp-label" for="estado">Estado</label>
+                        <select class="emp-input emp-select" id="estado" name="estado">
+                            <option value="1" selected>Vigente</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <div class="emp-field">
+                        <label class="emp-label" for="fecha_inicio">Fecha de inicio</label>
+                        <input class="emp-input" type="date" id="fecha_inicio"
+                               name="fecha_inicio" required>
+                    </div>
+
+                    <div class="emp-field">
+                        <label class="emp-label" for="fecha_fin">Fecha de fin</label>
+                        <input class="emp-input" type="date" id="fecha_fin" name="fecha_fin">
+                        <small class="emp-hint">Opcional. Déjalo vacío si es indefinido.</small>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+
+        <!-- MENSAJES -->
+        <div id="mensajeEmpleado" class="emp-mensaje" aria-live="polite"></div>
+
+        <!-- BOTONES -->
+        <footer class="emp-actions">
+            <button type="reset" class="emp-btn emp-btn-light">Cancelar</button>
+
+            <button type="submit" id="btnGuardarEmpleado" class="emp-btn emp-btn-primary">
+                Guardar empleado
+            </button>
+        </footer>
+    </form>
+</div>

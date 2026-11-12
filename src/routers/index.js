@@ -15,4 +15,5 @@ router.use('/areas', verifyToken, require('./area.routes'))
 router.use('/cargos', verifyToken, requireLevel('ADMIN'), require('./cargo.routes'))
 router.use('/horarios', verifyToken, requireLevel('ADMIN'), require('./horario.routes'))
 router.use('/marcaciones', verifyToken, require('./marcacion.routes'))
+router.use('/empleados', verifyToken, requireLevel('ADMIN'), require('./empleado.routes'))
 module.exports = router
