@@ -15,7 +15,7 @@ const pick = (body) => {
   )
 }
 
-
+//Listar
 exports.list = async(req,res) =>{
   res.json(
     await db('sedes')
@@ -40,6 +40,8 @@ exports.create = async(req, res) => {
   res.status(201).json({ idsede, message: 'Sede registrada correctamente' })
 }
 
+
+//Actualizar
 exports.update = async(req, res) => {
 
   const datos = pick(req.body)
@@ -51,6 +53,7 @@ exports.update = async(req, res) => {
   res.json({ message: "Sede actualizada correctamente" })
 }
 
+//Eliminar
 exports.remove = async(req,res) =>{
   const num = await db("sedes")
     .where({ idsede: req.params.id})
