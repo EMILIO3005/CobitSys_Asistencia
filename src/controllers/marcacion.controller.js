@@ -21,6 +21,24 @@ const obtenerFechaHora = () => {
     }
 }
 
+const calcularEstadoEntrada = (horaReal, horaProgramada) => {
+    const convertirSegundos = hora => {
+        const [horas, minutos, segundos = 0] = String(hora)
+            .substring(0, 8)
+            .split(':')
+            .map(Number)
+        return (horas * 3600) + (minutos * 60) + segundos
+    }
+
+    const diferencia = convertirSegundos(horaReal) - convertirSegundos(horaProgramada)
+    const tardanza = diferencia >= 15 * 60
+    return{
+        hora_programada: horaProgramada,
+        estado_entrada: tardanza ? 'TARDANZA' : 'PUNTUAL',
+        minutos_tardanza: tardanza ? Math.floor(diferencia / 60) : 0
+    }
+}
+
 
 
 const camposNecesarios = ['idcontrato', 'fecha', 'entrada', 'inicio_ref', 'fin_ref', 'salida']
@@ -137,9 +155,12 @@ exports.create = async (req, res) => {
 
     if (!marcacion && tipo !== 'entrada')  throw httpError(400, 'Primero debes registrar tu entrada')
     if (!marcacion) {
+        const resultadoEntrada = calcularEstadoEntrada(hora, horario.entrada)
         const datos = { idcontrato: contrato.idcontrato,fecha,dia,entrada: hora }
         const [idmarcacion] = await db('marcaciones').insert(datos)
-        return res.status(201).json({idmarcacion, tipo, hora, message: 'Entrada registrada correctamente'})
+        return res.status(201).json({idmarcacion, tipo, hora, ...resultadoEntrada, message: resultadoEntrada.estado_entrada === 'TARDANZA'
+                ? `Entrada registrada con tardanza de ${resultadoEntrada.minutos_tardanza} minutos`
+                : 'Entrada registrada correctamente'})
     }
 
     const campoAnterior = anterior[tipo]
@@ -183,7 +204,9 @@ exports.today = async (req, res) => {
         .where((q) => q.whereNull('fecha_fin').orWhere('fecha_fin', '>=', fecha))
         .first()
     if (!contrato) throw httpError(404, 'No tienes un contrato activo')
-
+    
+    const horario = await db('horarios').where({idcontrato: contrato.idcontrato}).first()
+    if (!horario) throw httpError(404, 'No tienes un horario asignado')
         
     const marcacion = await baseQuery()
         .where('m.idcontrato', contrato.idcontrato)
