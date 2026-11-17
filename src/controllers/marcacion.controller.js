@@ -207,11 +207,18 @@ exports.today = async (req, res) => {
     
     const horario = await db('horarios').where({idcontrato: contrato.idcontrato}).first()
     if (!horario) throw httpError(404, 'No tienes un horario asignado')
-        
+
     const marcacion = await baseQuery()
         .where('m.idcontrato', contrato.idcontrato)
         .where('m.fecha', fecha)
         .first()
+    if (!marcacion && marcacion.entrada){
+        const resultadoEntrada = calcularEstadoEntrada(
+            marcacion.entrada,
+            horario.entrada
+        )
+        return res.json({fecha, marcacion: {...marcacion, ...resultadoEntrada}})
+    }
     res.json({ fecha, marcacion: marcacion || null})
 }
 

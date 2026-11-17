@@ -7,6 +7,7 @@ window.iniciarAsistencia = async function () {
     const fechaActual = document.getElementById('fechaActual')
     const hora = document.getElementById('hora')
     const estadoAsistencia = document.getElementById('estadoAsistencia')
+    const etiquetaEntrada = document.getElementById('estadoEntrada')
     const btnRegistrar = document.getElementById('btnRegistrar')
 
     const horas = {
@@ -102,6 +103,18 @@ window.iniciarAsistencia = async function () {
         Object.keys(horas).forEach(tipo => {
             horas[tipo].textContent = obtenerHora(marcacion?.[tipo])
         })
+        etiquetaEntrada.className = 'estado-entrada'
+        etiquetaEntrada.textContent = ''
+        if (marcacion?.entrada && marcacion.estado_entrada){
+            if (marcacion.estado_entrada === 'TARDANZA'){
+                etiquetaEntrada.textContent =
+                    `TARDANZA . ${marcacion.minutos_tardanza} minutos`
+                etiquetaEntrada.classList.add('tardanza')
+            } else {
+                etiquetaEntrada.textContent = 'PUNTUAL'
+                etiquetaEntrada.classList.add('puntual')
+            }
+        }
         actualizarEstado()
     }
 
