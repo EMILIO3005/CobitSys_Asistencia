@@ -36,10 +36,9 @@ async function iniciar() {
   if (typeof cargarPersonas === 'function') {
     await cargarPersonas()
    }
+   await cargarTotalEmpleados()
   //Si eres un ADMIN deberias poder ver otras funciones...
-
   //Rutina que se ejecuta una vez iniciemos sesion
- 
 
 }
 
@@ -75,17 +74,45 @@ async function cargarPagina(url) {
   }
 }
 
+async function cargarTotalEmpleados() {
+  try {
+    const empleados = await llamarApi('/api/empleados', 'GET')
+    const total = document.getElementById('totalEmpleados')
 
-const contenidoDashboard = document.getElementById('mainContent').innerHTML
-//Manejador de eventos
+    if (total) { total.textContent = empleados.length }
+    
+  } catch (error) {
+    console.error('Error al obtener total de empleados:', error)
+    const total = document.getElementById('totalEmpleados')
+    if (total) total.textContent = '0'
+  }
+  
+}
+async function inicializarDashboard(){
+  mainContent.innerHTML = contenidoDashboard
+  cargarTotalEmpleados()
+}
+
+const mainContent = document.getElementById('mainContent')
+const contenidoDashboard = mainContent.innerHTML
 document.getElementById("logout").addEventListener("click", cerrarSesion)
-document.getElementById('menuDashboard').addEventListener('click', (e) => {
+document.addEventListener('click', (e) => {
+  const enlace = e.target.closest('[data-page]')
+  if (!enlace) return
+  e.preventDefault()
+  const url = enlace.dataset.page
+  const menu = document.querySelector(`.sidebar [data-page="${url}"]`)
+  if (menu) { marcarMenuActivo(menu) }
+
+  cargarPagina(url)
+})
+document.getElementById('menuDashboard').addEventListener('click', async(e) => {
   e.preventDefault()
   marcarMenuActivo(e.currentTarget)
-  document.getElementById('mainContent').innerHTML = contenidoDashboard
+  await inicializarDashboard()
 })
 
-document.getElementById('menuAsistencia').addEventListener('click', (e) => {
+/*document.getElementById('menuAsistencia').addEventListener('click', (e) => {
   e.preventDefault()
   marcarMenuActivo(e.currentTarget)
   cargarPagina('/asistencia.html')
@@ -95,6 +122,6 @@ document.getElementById('menuEmpleados').addEventListener('click', (e) => {
     e.preventDefault()
     marcarMenuActivo(e.currentTarget)
     cargarPagina('/empleados.html')
-})
+})*/
 
 iniciar()

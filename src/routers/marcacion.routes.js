@@ -3,7 +3,7 @@ const c = require('../controllers/marcacion.controller')
 const {verifyToken, requireLevel} =require('../middlewares/auth')
 
 
-router.get('/', c.list)
+router.get('/', verifyToken, c.list)
 router.get('/hoy', verifyToken, c.today)
 router.get('/:id', c.get)
 router.post('/', c.create)

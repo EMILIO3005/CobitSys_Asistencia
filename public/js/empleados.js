@@ -130,7 +130,13 @@ async function editarEmpleado(id) {
         Object.keys(empleado).forEach(campo => {
             const elemento = formulario.elements[campo]
             if (elemento && empleado[campo] !== null) {
-                elemento.value = empleado[campo]
+                if (['fechanac', 'fecha_inicio'].includes(campo)) {
+                    elemento.value = empleado[campo]
+                    ? String(empleado[campo]).substring(0, 10)
+                    : ''
+                }else {
+                    elemento.value = empleado[campo]
+                }
             }
         })
         formulario.elements.clave_acceso.value = ''
