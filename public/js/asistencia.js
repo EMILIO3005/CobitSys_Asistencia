@@ -158,66 +158,55 @@ window.iniciarAsistencia = async function () {
         }
     }
 
-async function cargarListaAsistencias() {
-    const lista = document.getElementById('listaAsistencias')
-    const cantidad = document.getElementById('cantidadEmpleados')
-    const plantilla = document.getElementById('plantillaEmpleado')
+    async function cargarListaAsistencias() {
+        const lista = document.getElementById('listaAsistencias')
+        const cantidad = document.getElementById('cantidadEmpleados')
+        const plantilla = document.getElementById('plantillaEmpleado')
 
-    try {
-        const marcaciones = await llamarApi('/api/marcaciones')
-        const partes = new Intl.DateTimeFormat('en-CA', {
-            timeZone: 'America/Lima',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        }).formatToParts(new Date())
-        const valor = tipo => partes.find(p => p.type === tipo).value
-        const fechaHoy = `${valor('year')}-${valor('month')}-${valor('day')}`
-        // Normalizar fecha recibida desde MySQL
-        function normalizarFecha(fecha) {
-            if (fecha instanceof Date) {
-                return new Intl.DateTimeFormat('en-CA', {
-                    timeZone: 'America/Lima',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                }).format(fecha)
+        try {
+            const marcaciones = await llamarApi('/api/marcaciones')
+             // Normalizar fecha recibida desde MySQL
+            function normalizarFecha(fecha) {
+                if (fecha instanceof Date) {
+                    return new Intl.DateTimeFormat('en-CA', {
+                        timeZone: 'America/Lima',
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    }).format(fecha)
+                }
+                return String(fecha).substring(0, 10)
             }
-            return String(fecha).substring(0, 10)
-        }
 
-        const asistenciasHoy = marcaciones.filter(m =>
-            normalizarFecha(m.fecha) === fechaHoy
-        )
-        cantidad.textContent = asistenciasHoy.length
-        lista.replaceChildren()
-        if (asistenciasHoy.length === 0) {
-            lista.textContent = 'No hay asistencias registradas hoy.'
-            return
-        }
-        asistenciasHoy.forEach(m => {
-            const tarjeta = plantilla.content.cloneNode(true)
-            const campos = {
-                nombre: `${m.nombres || ''} ${m.apellidos || ''}`.trim(),
-                cargo: m.nombre_cargo || 'Sin cargo asignado',
-                fecha: normalizarFecha(m.fecha),
-                entrada: obtenerHora(m.entrada),
-                inicio_ref: obtenerHora(m.inicio_ref),
-                fin_ref: obtenerHora(m.fin_ref),
-                salida: obtenerHora(m.salida)
+            cantidad.textContent = marcaciones.length
+            lista.replaceChildren()
+            if (marcaciones.length === 0) {
+                lista.textContent = 'No hay asistencias registradas.'
+                return
             }
-            Object.entries(campos).forEach(([campo, valor]) => {
-                const elemento = tarjeta.querySelector( `[data-campo="${campo}"]` )
-                if (elemento) { elemento.textContent = valor }
+            marcaciones.forEach(m => {
+                const tarjeta = plantilla.content.cloneNode(true)
+                const campos = {
+                    nombre: `${m.nombres || ''} ${m.apellidos || ''}`.trim(),
+                    cargo: m.nombre_cargo || 'Sin cargo asignado',
+                    fecha: normalizarFecha(m.fecha),
+                    entrada: obtenerHora(m.entrada),
+                    inicio_ref: obtenerHora(m.inicio_ref),
+                    fin_ref: obtenerHora(m.fin_ref),
+                    salida: obtenerHora(m.salida)
+                }
+                Object.entries(campos).forEach(([campo, valor]) => {
+                    const elemento = tarjeta.querySelector( `[data-campo="${campo}"]` )
+                    if (elemento) { elemento.textContent = valor }
+                })
+                lista.appendChild(tarjeta)
             })
-            lista.appendChild(tarjeta)
-        })
-    } catch (error) {
-        console.error('Error al cargar asistencias:', error)
-        cantidad.textContent = '0'
-        lista.textContent = 'No se pudieron cargar las asistencias.'
+        } catch (error) {
+            console.error('Error al cargar asistencias:', error)
+            cantidad.textContent = '0'
+            lista.textContent = 'No se pudieron cargar las asistencias.'
+        }
     }
-}
 
     async function registrarMarcacion() {
         const tipo = obtenerSiguienteMarcacion()

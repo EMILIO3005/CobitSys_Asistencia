@@ -93,7 +93,7 @@ exports.list = async (req, res) => {
         .orderBy('m.idmarcacion', 'desc')
 
     // Si NO es admin, filtramos solo por su propio idpersona
-    if (req.user.rol !== 'admin') {
+    if (req.user.nivel_acceso !== 'ADMIN') {
         query.where('p.idpersona', req.user.idpersona)
     }
 
@@ -107,7 +107,7 @@ exports.get = async (req, res) => {
         .where({ 'm.idmarcacion': req.params.id })
         .first()
 
-    if (req.user.rol !== 'admin') {
+    if (req.user.rol !== 'ADMIN') {
         query.where('p.idpersona', req.user.idpersona)}
 
     if (!marcacion) { throw httpError(404, 'Marcación no encontrada') }
@@ -215,14 +215,15 @@ exports.today = async (req, res) => {
         .where('m.idcontrato', contrato.idcontrato)
         .where('m.fecha', fecha)
         .first()
-    if (!marcacion && marcacion.entrada){
+    if (!marcacion ){ return res.json({fecha, marcacion: null}) }
+    if (marcacion.entrada){
         const resultadoEntrada = calcularEstadoEntrada(
             marcacion.entrada,
             horario.entrada
         )
         return res.json({fecha, marcacion: {...marcacion, ...resultadoEntrada}})
     }
-    res.json({ fecha, marcacion: marcacion || null})
+    res.json({ fecha, marcacion})
 }
 
 // ELIMINAR MARCACIÓN
