@@ -74,7 +74,6 @@ exports.list = async (req, res) => {
         .orderBy('m.fecha', 'desc')
         .orderBy('m.idmarcacion', 'desc')
 
-    // Si NO es admin, filtramos solo por su propio idpersona
     if (req.user.rol !== 'admin') {
         query.where('p.idpersona', req.user.idpersona)
     }
@@ -122,7 +121,6 @@ exports.create = async (req, res) => {
     const dia = validarDiaLaboral(horario.dia, fecha)
     if (!dia) throw httpError(400, 'Hoy no corresponde a un día laboral')
 
-   
     const marcacion = await db('marcaciones')
         .where({ idcontrato: contrato.idcontrato, fecha })
         .first()
