@@ -93,7 +93,7 @@ exports.list = async (req, res) => {
         .orderBy('m.idmarcacion', 'desc')
 
     // Si NO es admin, filtramos solo por su propio idpersona
-    if (req.user.rol !== 'admin') {
+    if (req.user.nivel_acceso !== 'admin') {
         query.where('p.idpersona', req.user.idpersona)
     }
 
@@ -107,7 +107,7 @@ exports.get = async (req, res) => {
         .where({ 'm.idmarcacion': req.params.id })
         .first()
 
-    if (req.user.rol !== 'ADMIN') {
+    if (req.user.nivel_acceso !== 'ADMIN') {
         query.where('p.idpersona', req.user.idpersona)}
 
     if (!marcacion) { throw httpError(404, 'Marcación no encontrada') }
