@@ -140,6 +140,9 @@ exports.create = async (req, res) => {
     const dia = validarDiaLaboral(horario.dia, fecha)
     if (!dia) throw httpError(400, 'Hoy no corresponde a un día laboral')
 
+    if (tipo === 'entrada' && hora >= String(horario.salida).substring(0, 8)) {
+        throw httpError(400, 'No puedes registrar tu entrada porque el horario de salida ya comenzo')
+    }
    
     const marcacion = await db('marcaciones')
         .where({ idcontrato: contrato.idcontrato, fecha })

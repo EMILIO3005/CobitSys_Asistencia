@@ -86,8 +86,88 @@
             </div>
         </aside>
         <main class="main-content" id="mainContent">
-            <h2>Dashboard de asistencia</h2>
-            <p>Bienvenido al sistema de control de asistencia.</p>
+            <div class="dashboard-header">
+                <div>
+                    <h2>Dashboard de asistencia</h2>
+                    <p>Bienvenido al sistema de control de asistencia.</p>
+                </div>
+                <div class="dashboard-date">
+                    <i class="bi bi-calendar3"></i>
+                    <span id="fechaDashboard"></span>
+                </div>
+            </div>
+
+            <section class="dashboard-modulos">
+                <a href="/asistencia.html" class="dashboard-card card-asistencias">
+                    <div class="card-icon">
+                        <i class="bi bi-calendar-check-fill"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="totalAsistencias">--</h3>
+                        <p>Asistencia</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Control de asistencia</span>
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-card card-registros">
+                    <div class="card-icon">
+                        <i class="bi bi-clipboard-data-fill"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="totalRegistros">--</h3>
+                        <p>Registros</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Consultar registros</span>
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </div>
+                </a>
+
+                <a href="/empleados.html" class="dashboard-card card-empleados">
+                    <div class="card-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="totalEmpleados">--</h3>
+                        <p>Empleados</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Gestionar empleados</span>
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-card card-areas">
+                    <div class="card-icon">
+                        <i class="bi bi-building-fill"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="totalAreasSedes">--</h3>
+                        <p>Áreas y sedes</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Gestionar áreas y sedes</span>
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-card card-reportes">
+                    <div class="card-icon">
+                        <i class="bi bi-bar-chart-fill"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="totalReportes">--</h3>
+                        <p>Reportes</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Consultar reportes</span>
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </div>
+                </a>
+            </section>
         </main>
     </div>
     <script src="./js/app.js"></script>
