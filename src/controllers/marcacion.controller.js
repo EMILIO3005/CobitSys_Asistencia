@@ -93,7 +93,7 @@ exports.list = async (req, res) => {
         .orderBy('m.idmarcacion', 'desc')
 
     // Si NO es admin, filtramos solo por su propio idpersona
-    if (req.user.nivel_acceso !== 'admin') {
+    if (req.user.nivel_acceso !== 'ADMIN') {
         query.where('p.idpersona', req.user.idpersona)
     }
 
@@ -105,7 +105,6 @@ exports.list = async (req, res) => {
 exports.get = async (req, res) => {
     const query = await baseQuery()
         .where({ 'm.idmarcacion': req.params.id })
-        .first()
 
     if (req.user.nivel_acceso !== 'ADMIN') {
         query.where('p.idpersona', req.user.idpersona)}
@@ -133,7 +132,7 @@ exports.create = async (req, res) => {
     if (!contrato) throw httpError(404, 'No tienes un contrato activo')
     // Buscar horario asignado
     const horario = await db('horarios')
-        .where({ idhorario: contrato.idcontrato })
+        .where({ idhorario: contrato.idhorario })
         .first()
 
     if (!horario) throw httpError(404, 'No tienes un horario asignado')
@@ -206,7 +205,7 @@ exports.today = async (req, res) => {
         .first()
     if (!contrato) throw httpError(404, 'No tienes un contrato activo')
     
-    const horario = await db('horarios').where({idhorario: contrato.idcontrato}).first()
+    const horario = await db('horarios').where({idhorario: contrato.idhorario}).first()
     if (!horario) throw httpError(404, 'No tienes un horario asignado')
 
     const marcacion = await baseQuery()
