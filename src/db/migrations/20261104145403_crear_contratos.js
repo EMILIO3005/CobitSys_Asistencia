@@ -8,6 +8,7 @@ exports.up = async function(knex) {
     t.integer('idpersona').unsigned().notNullable().references('idpersona').inTable('personas').onDelete('RESTRICT')
     t.integer('idcargo').unsigned().notNullable().references('idcargo').inTable('cargos').onDelete('RESTRICT')
     t.integer('idsede').unsigned().notNullable().references('idsede').inTable('sedes').onDelete('RESTRICT')
+    t.integer('idhorario').unsigned().notNullable().references('idhorario').inTable('horarios').onDelete('RESTRICT')
     t.string('modalidad', 100).notNullable()
     t.date('fecha_inicio').notNullable()
     t.date('fecha_fin')

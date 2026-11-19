@@ -13,6 +13,10 @@ const camposContrato = [
     'fecha_inicio', 'fecha_fin', 'estado'
 ]
 
+const camposHorario = [
+    'dia', 'entrada', 'inicio_ref', 'fin_ref', 'salida'
+]
+
 const pick = (body, campos) => Object.fromEntries(
     campos.filter(key => key in body).map(key => [
         key,

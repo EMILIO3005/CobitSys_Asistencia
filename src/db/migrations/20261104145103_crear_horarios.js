@@ -5,7 +5,6 @@
 exports.up = async function(knex) {
   await knex.schema.createTable("horarios", (t) => {
     t.increments('idhorario').primary()
-    t.integer('idcontrato').unsigned().notNullable().references('idcontrato').inTable('contratos').onDelete('RESTRICT')
     t.string('dia', 30).notNullable()
     t.time('entrada').notNullable()
     t.time('inicio_ref').notNullable()
