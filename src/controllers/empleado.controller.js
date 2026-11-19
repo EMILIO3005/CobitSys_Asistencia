@@ -9,13 +9,10 @@ const camposPersona = [
 ]
 
 const camposContrato = [
-    'idcargo', 'idsede', 'modalidad',
+    'idcargo', 'idsede', 'idhorario', 'modalidad',
     'fecha_inicio', 'fecha_fin', 'estado'
 ]
 
-const camposHorario = [
-    'dia', 'entrada', 'inicio_ref', 'fin_ref', 'salida'
-]
 
 const pick = (body, campos) => Object.fromEntries(
     campos.filter(key => key in body).map(key => [
@@ -32,9 +29,11 @@ const validarEmpleado = (persona, contrato) => {
     
     contrato.idcargo = Number(contrato.idcargo)
     contrato.idsede = Number(contrato.idsede)
+    contrato.idhorario = Number(contrato.idhorario)
     if (!Number.isInteger(contrato.idcargo) || contrato.idcargo <= 0 ||
-        !Number.isInteger(contrato.idsede) || contrato.idsede <= 0) {
-        throw httpError(400, 'El cargo o la sede seleccionados no son válidos')
+        !Number.isInteger(contrato.idsede) || contrato.idsede <= 0 ||
+        !Number.isInteger(contrato.idhorario) || contrato.idhorario <= 0){
+        throw httpError(400, 'El cargo,la sede o el horario seleccionados no son válidos')
     }
 }
 
@@ -47,72 +46,37 @@ const validarAsignaciones = async (trx, contrato) => {
         .where({ idsede: contrato.idsede, estado: true })
         .first()
     if (!sede) throw httpError(404, 'La sede no existe o está inactiva')
+
+    const horario = await trx('horarios')
+        .where({ idhorario: contrato.idhorario})
+        .first()
+    if (!horario) throw httpError(404, 'El horario no existe')
 }
 
-exports.list = async (req, res) => {
-    const empleados = await db('contratos as c')
+const consultarEmpleados = () => db('contratos as c')
         .join('personas as p', 'c.idpersona', 'p.idpersona')
         .join('usuarios as u', 'p.idpersona', 'u.idpersona')
         .join('cargos as ca', 'c.idcargo', 'ca.idcargo')
         .join('sedes as s', 'c.idsede', 's.idsede')
+        .join('horarios as h', 'c.idhorario', 'h.idhorario')
         .select(
-            'p.idpersona',
-            'p.apellidos',
-            'p.nombres',
-            'p.tipodoc',
-            'p.numdoc',
-            'p.fechanac',
-            'p.direccion',
-            'p.telefono',
-            'p.email',
-            'u.idusuario',
-            'u.nombre_usuario',
-            'u.nivel_acceso',
-            'c.idcontrato',
-            'c.idcargo',
-            'c.idsede',
-            'ca.nombre_cargo',
-            's.nombre_sede',
-            'c.modalidad',
-            'c.fecha_inicio',
-            'c.fecha_fin',
-            'c.estado'
+            'p.idpersona', 'p.apellidos', 'p.nombres', 'p.tipodoc', 'p.numdoc',
+            'p.fechanac', 'p.direccion', 'p.telefono', 'p.email', 'u.idusuario', 'u.nombre_usuario',
+            'u.nivel_acceso', 'c.idcontrato', 'c.idcargo', 'c.idsede', 'c.idhorario',
+            'ca.nombre_cargo', 's.nombre_sede', 'h.dia', 'h.entrada', 'h.inicio_ref',
+            'h.fin_ref', 'h.salida', 'c.modalidad', 'c.fecha_inicio', 'c.fecha_fin','c.estado'
         )
-        .orderBy('p.apellidos', 'asc')
+
+exports.list = async (req, res) => {
+    const empleados = await consultarEmpleados()
+    .orderBy('p.apellidos', 'asc')    
     res.json(empleados)
 }
 
 // OBTENER EMPLEADO POR ID DE CONTRATO
 exports.get = async (req, res) => {
-    const empleado = await db('contratos as c')
-        .join('personas as p', 'c.idpersona', 'p.idpersona')
-        .join('usuarios as u', 'p.idpersona', 'u.idpersona')
-        .join('cargos as ca', 'c.idcargo', 'ca.idcargo')
-        .join('sedes as s', 'c.idsede', 's.idsede')
-        .where('c.idcontrato', req.params.id)
-        .select(
-            'p.idpersona',
-            'p.apellidos',
-            'p.nombres',
-            'p.tipodoc',
-            'p.numdoc',
-            'p.fechanac',
-            'p.direccion',
-            'p.telefono',
-            'p.email',
-            'u.idusuario',
-            'u.nombre_usuario',
-            'u.nivel_acceso',
-            'c.idcontrato',
-            'c.idcargo',
-            'c.idsede',
-            'ca.nombre_cargo',
-            's.nombre_sede',
-            'c.modalidad',
-            'c.fecha_inicio',
-            'c.fecha_fin',
-            'c.estado'
-        )
+    const empleado = await consultarEmpleados()
+        .where('c.contrato', req.params.id)
         .first()
     if (!empleado) throw httpError(404, 'Empleado no encontrado')
     res.json(empleado)
@@ -122,14 +86,10 @@ exports.create = async (req, res) => {
     const persona = pick(req.body, camposPersona)
     const contrato = pick(req.body, camposContrato)
 
-    const {
-        nombre_usuario,
-        clave_acceso,
-        nivel_acceso = 'USUARIO'
-    } = req.body
+    const { nombre_usuario, clave_acceso, nivel_acceso = 'USUARIO' } = req.body
 
     requireFields(persona, camposPersona)
-    requireFields(contrato, ['idcargo', 'idsede', 'modalidad', 'fecha_inicio'])
+    requireFields(contrato, ['idcargo', 'idsede', 'idhorario', 'modalidad', 'fecha_inicio'])
     requireFields(req.body, ['nombre_usuario', 'clave_acceso'])
 
     validarEmpleado(persona, contrato)
@@ -175,7 +135,7 @@ exports.update = async (req, res) => {
     const contrato = pick(req.body, camposContrato)
     const { nombre_usuario, clave_acceso, nivel_acceso } = req.body
     requireFields(persona, camposPersona)
-    requireFields(contrato, ['idcargo', 'idsede', 'modalidad', 'fecha_inicio'])
+    requireFields(contrato, ['idcargo', 'idsede', 'idhorario', 'modalidad', 'fecha_inicio'])
     requireFields(req.body, ['nombre_usuario', 'nivel_acceso'])
 
     validarEmpleado(persona, contrato)
@@ -187,11 +147,9 @@ exports.update = async (req, res) => {
             .join('personas as p', 'c.idpersona', 'p.idpersona')
             .join('usuarios as u', 'p.idpersona', 'u.idpersona')
             .where('c.idcontrato', req.params.id)
-            .select(
-                'c.idpersona',
-                'u.idusuario'
-            )
+            .select('c.idpersona', 'u.idusuario')
             .first()
+            
         if (!empleado) throw httpError(404, 'Empleado no encontrado')
         await validarAsignaciones(trx, contrato)
         // ACTUALIZAR PERSONA

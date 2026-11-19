@@ -2,7 +2,7 @@ const db = require('../config/db')
 const { httpError, requireFields } = require('../utils')
 
 // Campos permitidos para registrar y actualizar contratos
-const camposNecesarios = ['idpersona','idcargo','idsede','modalidad','fecha_inicio','fecha_fin','estado']
+const camposNecesarios = ['idpersona','idcargo','idsede', 'idhorario','modalidad','fecha_inicio','fecha_fin','estado']
 
 // Filtrar los campos recibidos
 
@@ -28,6 +28,7 @@ const baseQuery = () => {
         .join('personas as p', 'p.idpersona', 'co.idpersona')
         .join('cargos as c', 'c.idcargo', 'co.idcargo')
         .join('sedes as s', 's.idsede', 'co.idsede')
+        .join('horarios as h', 'h.idhorario', 'co.idhorario')
         .select(
             'co.idcontrato',
             'co.idpersona',
@@ -37,6 +38,12 @@ const baseQuery = () => {
             'c.nombre_cargo',
             'co.idsede',
             's.nombre_sede',
+            'co.idhorario',
+            'h.dia',
+            'h.entrada',
+            'h.inicio_ref',
+            'h.fin_ref',
+            'h.salida',
             'co.modalidad',
             'co.fecha_inicio',
             'co.fecha_fin',
@@ -49,20 +56,17 @@ const baseQuery = () => {
 // Verificar que existan las relaciones
 const checkRelaciones = async (datos) => {
 
-    const persona = await db('personas')
-        .where({ idpersona: datos.idpersona })
-        .first()
+    const persona = await db('personas').where({ idpersona: datos.idpersona }).first()
     if (!persona) { throw httpError(404, 'La persona seleccionada no existe') }
    
-    const cargo = await db('cargos')
-        .where({ idcargo: datos.idcargo })
-        .first()
+    const cargo = await db('cargos').where({ idcargo: datos.idcargo }).first()
     if (!cargo) { throw httpError(404, 'El cargo seleccionado no existe') }
 
-    const sede = await db('sedes')
-        .where({ idsede: datos.idsede })
-        .first()
+    const sede = await db('sedes').where({ idsede: datos.idsede }).first()
     if (!sede) { throw httpError(404, 'La sede seleccionada no existe') }
+
+    const horario = await db('horarios').where({ idhorario: datos.idhorario }).first()
+    if (!horario) throw httpError(404, 'El horario seleccionado no existe')
 }
 
 // Validar fechas
@@ -95,7 +99,7 @@ exports.create = async (req, res) => {
 
     const datos = pick(req.body)
 
-    requireFields(datos, [ 'idpersona', 'idcargo', 'idsede', 'modalidad', 'fecha_inicio' ])
+    requireFields(datos, [ 'idpersona', 'idcargo', 'idsede', 'idhorario', 'modalidad', 'fecha_inicio' ])
     await checkRelaciones(datos)
     validarFechas(datos)
 
