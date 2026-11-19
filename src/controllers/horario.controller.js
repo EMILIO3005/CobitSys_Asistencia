@@ -1,7 +1,7 @@
 const db = require('../config/db')
 const { httpError, requireFields } = require('../utils')
 
-const camposNecesarios = ['idcontrato', 'dia', 'entrada', 'inicio_ref', 'fin_ref', 'salida']
+const camposNecesarios = [ 'dia', 'entrada', 'inicio_ref', 'fin_ref', 'salida']
 
 const pick = (body) => {
     return Object.fromEntries(camposNecesarios
@@ -12,13 +12,8 @@ const pick = (body) => {
 }
 
 const baseQuery = () => db('horarios as h')
-    .join('contratos as co ', 'co.idcontrato', 'h.idcontrato')
-    .join('personas as p', 'p.idpersona', 'co.idpersona')
     .select(
         'h.idhorario',
-        'h.idcontrato', 
-        'p.apellidos',
-        'p.nombres',
         'h.dia',
         'h.entrada',
         'h.inicio_ref',
@@ -43,11 +38,8 @@ const validarHoras = (datos) => {
 
 //Listar
 exports.list = async (req, res) => {
-  res.json( 
-    await bd('horarios')
-    .where('idhorario', ...camposNecesarios )
-    .orderBy("idcontrato")
-  )
+    const horarios = await baseQuery().orderBy('h.idhorario', 'desc')
+    res.json(horarios)
 }
 //Buscar
 exports.get = async(req, res) => {
@@ -62,7 +54,6 @@ exports.create = async(req, res) => {
     const datos = pick(req.body)
 
     requireFields(datos, camposNecesarios)
-    await checkContrato(datos.idcontrato)
     validarHoras(datos)
 
     const [idhorario] = await db('horarios').insert(datos)
@@ -72,26 +63,33 @@ exports.create = async(req, res) => {
 //Actualizar
 exports.update = async(req, res) => {
     const datos = pick(req.body)
-    const horario = await db('horarios').where({ idhorario: req.params.id }).first()
-
-    if (!horario)  throw httpError(404, 'Horario no encontrado')
     
-    const datosActualizados = {...horario, ...datos}
+    if (Object.keys(datos).length === 0) throw httpError(400, 'Nose enviaron campos para actualizar')
+    const horario = await db('horarios')
+        .where({ idhorario: req.params.id })
+        .first()
+    if (!horario) throw httpError(404, 'Horario no encontrado')
 
-    await checkContrato(datosActualizados.idcontrato)
-    validarHoras(datosActualizados)
+    validarHoras({ ...horario, ...datos })
 
-    if (Object.keys(datos).length === 0) throw httpError(400, 'No se enviaron campos para actualizar')
-    
     await db('horarios').where({ idhorario: req.params.id }).update(datos)
     res.json({message: 'Horario actualizado correctamente'})
 }
 
 //Eliminar
 exports.remove = async (req, res) => {
-  const eliminado = await db('horarios')
-    .where({ idhorario: req.params.id })
-    .del()
-  if (!eliminado) throw httpError(404, 'Horario no encontrado')
-  res.json({message: 'Horario eliminado correctamente'})
+    const eliminado = await db('horarios')
+        .where({ idhorario: req.params.id })
+        .del()
+    if (!eliminado) throw httpError(404, 'Horario no encontrado')
+
+    const asignado = await db('contratos')
+        .where({ idhorario: req.params.id })
+        .first()
+    if (asignado) throw httpError(409, 'El horario esta asignado a uno o mas contratos')
+    
+    await db('horarios')
+        .where({ idhorario: req.params.id })
+        .del()
+    res.json({message: 'Horario eliminado correctamente'})
 }
