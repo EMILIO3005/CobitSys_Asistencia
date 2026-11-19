@@ -18,7 +18,11 @@ async function cargarOpcionesEmpleado(url, idSelect, campoId, campoTexto) {
         datos.forEach(item => {
             const opcion = document.createElement('option')
             opcion.value = item[campoId]
-            opcion.textContent = item[campoTexto]
+            if (idSelect === 'idhorario') {
+                opcion.textContent = `${item.dia} (${item.entrada} - ${item.salida})`
+            } else {
+                opcion.textContent = item[campoTexto]
+            }
             select.appendChild(opcion)
         })
     } catch (error) {
@@ -90,6 +94,7 @@ async function guardarEmpleado(event) {
 
     datos.idcargo = Number(datos.idcargo)
     datos.idsede = Number(datos.idsede)
+    datos.idhorario = Number(datos.idhorario)
     datos.estado = datos.estado === '1'
 
     const url = editando
@@ -195,6 +200,7 @@ window.iniciarEmpleado = async function () {
     await Promise.all([
         cargarOpcionesEmpleado('/api/cargos', 'idcargo', 'idcargo', 'nombre_cargo'),
         cargarOpcionesEmpleado('/api/sedes', 'idsede', 'idsede', 'nombre_sede'),
+        cargarOpcionesEmpleado('/api/horarios', 'idhorario', 'idhorario', 'dia'),
         cargarEmpleados()
     ])
 }

@@ -103,13 +103,14 @@ exports.list = async (req, res) => {
 
 // OBTENER MARCACIÓN POR ID
 exports.get = async (req, res) => {
-    const marcacion = await baseQuery()
+    const query = await baseQuery()
         .where({ 'm.idmarcacion': req.params.id })
         .first()
 
-    if (req.user.rol !== 'ADMIN') {
+    if (req.user.nivel_acceso !== 'ADMIN') {
         query.where('p.idpersona', req.user.idpersona)}
-
+    
+    const marcacion = await query.first()
     if (!marcacion) { throw httpError(404, 'Marcación no encontrada') }
     res.json(marcacion)
 }
@@ -132,7 +133,7 @@ exports.create = async (req, res) => {
     if (!contrato) throw httpError(404, 'No tienes un contrato activo')
     // Buscar horario asignado
     const horario = await db('horarios')
-        .where({ idcontrato: contrato.idcontrato })
+        .where({ idhorario: contrato.idcontrato })
         .first()
 
     if (!horario) throw httpError(404, 'No tienes un horario asignado')
@@ -208,7 +209,7 @@ exports.today = async (req, res) => {
         .first()
     if (!contrato) throw httpError(404, 'No tienes un contrato activo')
     
-    const horario = await db('horarios').where({idcontrato: contrato.idcontrato}).first()
+    const horario = await db('horarios').where({idhorario: contrato.idcontrato}).first()
     if (!horario) throw httpError(404, 'No tienes un horario asignado')
 
     const marcacion = await baseQuery()

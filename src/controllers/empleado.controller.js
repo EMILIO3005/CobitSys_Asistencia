@@ -76,7 +76,7 @@ exports.list = async (req, res) => {
 // OBTENER EMPLEADO POR ID DE CONTRATO
 exports.get = async (req, res) => {
     const empleado = await consultarEmpleados()
-        .where('c.contrato', req.params.id)
+        .where('c.idcontrato', req.params.id)
         .first()
     if (!empleado) throw httpError(404, 'Empleado no encontrado')
     res.json(empleado)
