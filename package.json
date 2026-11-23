@@ -16,6 +16,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "apexcharts": "^8.9.1",
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.4.0",
     "cookie-parser": "^1.4.7",

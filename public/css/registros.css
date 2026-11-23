@@ -1,0 +1,124 @@
+/* MODULO REGISTROS */
+
+.registros-page {
+    padding: 0;
+}
+
+/* ENCABEZADO */
+.registros-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.registros-header h4 {
+    font-size: 23px;
+    font-weight: 700;
+    color: #123b70;
+    margin: 0 0 3px;
+}
+
+.registros-header p {
+    color: #8492a6;
+    margin: 0;
+}
+
+/* FILTROS */
+.registros-filtros {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.2fr 1.3fr auto;
+    align-items: end;
+    gap: 14px;
+}
+
+.registros-filtros label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 7px;
+    color: #344054;
+}
+
+.registros-filtros .form-control {
+    height: 42px;
+    border-radius: 8px;
+}
+
+.registros-filtros .filtro-boton {
+    min-width: 115px;
+}
+
+/* BOTON ACTUALIZAR */
+.btn-registros-refresh {
+    background: #ffffff;
+    color: #123b70;
+    border: 1px solid #d5deea;
+    border-radius: 9px;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-registros-refresh:hover {
+    background: #eaf1f9;
+    border-color: #123b70;
+}
+
+/* BOTON BUSCAR */
+.btn-registros-primary {
+    width: 100%;
+    height: 42px;
+    background: #123b70;
+    color: #ffffff;
+    border: 1px solid #123b70;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-registros-primary:hover {
+    background: #0d2d55;
+}
+
+.btn-registros-primary i {
+    margin-right: 5px;
+}
+
+/* SELECTOR DE SEDE */
+.select-registros {
+    width: 100%;
+    height: 42px;
+    padding: 8px 36px 8px 12px;
+    color: #344054;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.select-registros:focus {
+    border-color: #123b70;
+    box-shadow: 0 0 0 3px rgba(18, 59, 112, 0.12);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+    .registros-filtros {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .registros-header {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .registros-filtros {
+        grid-template-columns: 1fr;
+    }
+}

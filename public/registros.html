@@ -1,0 +1,95 @@
+<link rel="stylesheet" href="/css/registros.css">
+<div class="registros-page">
+
+    <!-- ENCABEZADO -->
+    <div class="registros-header">
+        <div>
+            <h4>Registros de asistencia</h4>
+            <p>Consulta las marcaciones de los empleados</p>
+        </div>
+
+        <button class="btn-registros-refresh" onclick="cargarRegistros()">
+            <i class="bi bi-arrow-clockwise"></i> Actualizar
+        </button>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+
+            <div class="registros-filtros">
+
+                <div class="filtro-empleado">
+                    <label for="buscarEmpleado">Buscar empleado</label>
+                    <input type="text" id="buscarEmpleado" class="form-control" placeholder="Nombre o DNI">
+                </div>
+
+                <div>
+                    <label for="fechaDesde">Fecha desde</label>
+                    <input type="date" id="fechaDesde" class="form-control">
+                </div>
+
+                <div>
+                    <label for="fechaHasta">Fecha hasta</label>
+                    <input type="date" id="fechaHasta" class="form-control">
+                </div>
+
+                <div>
+                    <label for="filtroSede">Sede</label>
+                    <select id="filtroSede" class="select-registros">
+                        <option value="">Todas las sedes</option>
+                    </select>
+                </div>
+
+                <div class="filtro-boton">
+                    <button class="btn btn-primary w-100" onclick="filtrarRegistros()">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TABLA -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="fw-semibold mb-0">Marcaciones registradas</h5>
+                <span class="badge text-bg-primary" id="totalRegistros">
+                    0 registros
+                </span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Empleado</th>
+                            <th>DNI</th>
+                            <th>Cargo</th>
+                            <th>Sede</th>
+                            <th>Fecha</th>
+                            <th>Entrada</th>
+                            <th>Inicio ref.</th>
+                            <th>Fin ref.</th>
+                            <th>Salida</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaRegistros">
+                        <tr>
+                            <td colspan="10" class="text-center py-4">
+                                Cargando registros...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>

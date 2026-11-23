@@ -13,7 +13,7 @@ const { notFound, errorHandler } = require('./middlewares/errorHandler')
 const app = express()
 const isProd = process.env.NODE_ENV === 'production'
 
-if (process.env.TRUST_PROXY)app.set('trust:proxy', Number(process.env.TRUST_PROXY))
+if (process.env.TRUST_PROXY)app.set('trust proxy', Number(process.env.TRUST_PROXY))
 
 app.use(helmet({
     contentSecurityPolicy: {

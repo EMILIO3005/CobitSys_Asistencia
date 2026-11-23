@@ -63,6 +63,7 @@ async function cargarPagina(url) {
 
     if (url === '/asistencia.html') { await window.iniciarAsistencia?.() }
     if (url === '/empleados.html') { await window.iniciarEmpleado?.() }
+    if (url === '/registros.html') { await window.iniciarRegistros?.()}
   } catch (error) {
     console.error('Error al cargar la página:', error)
 

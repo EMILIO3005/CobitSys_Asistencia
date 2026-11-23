@@ -1,6 +1,6 @@
 :root {
     --emp-bg: #f3f6fb;
-    --emp-card-bg: #ffffff;
+    --emp-card-bg: #fff;
     --emp-border: #dfe5ee;
     --emp-text: #1f2937;
     --emp-muted: #6b7280;
@@ -16,93 +16,66 @@
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--emp-bg);
-    color: var(--emp-text);
-    border-top: 3px solid var(--emp-primary);
-}
-
+/* CONTENEDOR Y ENCABEZADO */
 .emp-container {
     width: 100%;
     max-width: none;
     margin: 0;
-    padding: 20px 28px 0 20px;
+    padding: 0;
 }
 
-/* Encabezado */
 .emp-header {
-    margin-bottom: 24px;
+    margin-bottom: 18px;
     text-align: left;
 }
 
 .emp-title {
-    margin: 0 0 6px;
-    font-size: 1.6rem;
+    margin: 0 0 3px;
+    font-size: 23px;
     font-weight: 700;
-    letter-spacing: -0.01em;
-    color: #111827;
-    text-align: left;
+    color: #123b70;
 }
 
 .emp-subtitle {
     margin: 0;
-    font-size: 0.78rem;
-    color: var(--emp-muted);
-    text-align: left;
+    font-size: 14px;
+    color: #8492a6;
 }
 
-/* Tarjetas */
+/* TARJETAS */
 .emp-card {
+    width: 100%;
+    padding: 22px 24px 24px;
+    margin-bottom: 24px;
     background: var(--emp-card-bg);
     border: 1px solid var(--emp-border);
     border-radius: var(--emp-radius);
-    padding: 22px 24px 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
 }
 
 .emp-form {
     width: 100%;
 }
 
-.emp-card {
-    width: 100%;
-}
-
 .emp-card-title {
     margin: 0 0 18px;
-    font-size: 0.95rem;
+    font-size: 18px;
     font-weight: 700;
-    color: #111827;
+    color: var(--emp-text);
 }
 
-/* Rejilla de 12 columnas */
+/* DISTRIBUCIÓN DEL FORMULARIO */
 .emp-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 16px;
 }
 
-.emp-col-4 {
-    grid-column: span 4;
-}
+.emp-col-4 { grid-column: span 4; }
+.emp-col-6 { grid-column: span 6; }
+.emp-col-12 { grid-column: span 12; }
+.emp-grid-2 { grid-template-columns: repeat(2, 1fr); }
 
-.emp-col-6 {
-    grid-column: span 6;
-}
-
-.emp-col-12 {
-    grid-column: span 12;
-}
-
-/* Contrato: 2 columnas */
-.emp-grid-2 {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-/* Cargo + Contrato lado a lado */
 .emp-split {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -114,7 +87,7 @@ body {
     margin-bottom: 0;
 }
 
-/* Campos */
+/* CAMPOS */
 .emp-field {
     display: flex;
     flex-direction: column;
@@ -122,10 +95,10 @@ body {
 }
 
 .emp-label {
-    margin-bottom: 6px;
-    font-size: 0.72rem;
+    margin-bottom: 7px;
+    font-size: 14px;
     font-weight: 600;
-    color: #374151;
+    color: #344054;
 }
 
 .emp-input {
@@ -133,12 +106,12 @@ body {
     min-height: 38px;
     padding: 9px 12px;
     font: inherit;
-    font-size: 0.8rem;
+    font-size: 14px;
     color: var(--emp-text);
     background: #fff;
     border: 1px solid var(--emp-border);
     border-radius: 8px;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color .15s ease, box-shadow .15s ease;
 }
 
 .emp-input::placeholder {
@@ -148,7 +121,7 @@ body {
 .emp-input:focus {
     outline: 0;
     border-color: var(--emp-primary);
-    box-shadow: 0 0 0 3px rgba(29, 86, 165, 0.15);
+    box-shadow: 0 0 0 3px rgba(29, 86, 165, .15);
 }
 
 .emp-select {
@@ -162,188 +135,22 @@ body {
 
 .emp-hint {
     margin-top: 6px;
-    font-size: 0.68rem;
+    font-size: 11px;
     line-height: 1.35;
     color: var(--emp-muted);
 }
 
-/* Mensajes */
+/* MENSAJES */
 .emp-mensaje:empty {
     display: none;
 }
-
-.emp-mensaje {
-    margin-bottom: 16px;
-    font-size: 0.85rem;
-}
-
-/* Barra de botones */
-.emp-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 18px 24px;
-    margin: 0 -24px;
-    background: #eef3fa;
-    border-top: 1px solid var(--emp-border);
-}
-
-.emp-btn {
-    padding: 9px 20px;
-    font: inherit;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: background 0.15s ease;
-}
-
-.emp-btn-light {
-    background: #fff;
-    color: #374151;
-    border-color: var(--emp-border);
-}
-
-.emp-btn-light:hover {
-    background: #f3f4f6;
-}
-
-.emp-btn-primary {
-    background: var(--emp-primary);
-    border-color: var(--emp-primary);
-    color: #fff;
-}
-
-.emp-btn-primary:hover:not(:disabled) {
-    background: var(--emp-primary-hover);
-    border-color: var(--emp-primary-hover);
-}
-
-.emp-btn-primary:disabled {
-    opacity: 0.65;
-    cursor: not-allowed;
-}
-
-
-
-/* ==============================
-   LISTADO DE EMPLEADOS
-============================== */
-
-.emp-listado {
-    margin-top: 28px;
-}
-
-.emp-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.emp-card-title {
-    margin: 0 0 6px;
-    color: var(--emp-text);
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.emp-table-container {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.emp-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
-    color: var(--emp-text);
-    white-space: nowrap;
-}
-
-.emp-table thead {
-    background: #f1f5fa;
-}
-
-.emp-table th {
-    padding: 13px 14px;
-    text-align: left;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #526176;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--emp-border);
-}
-
-.emp-table td {
-    padding: 13px 14px;
-    border-bottom: 1px solid var(--emp-border);
-    vertical-align: middle;
-}
-
-.emp-table tbody tr {
-    transition: background 0.2s ease;
-}
-
-.emp-table tbody tr:hover {
-    background: #f7f9fc;
-}
-
-.emp-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* ==============================
-   BOTONES DE ACCIONES
-============================== */
-
-.emp-table td:last-child {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.emp-btn {
-    border: none;
-    border-radius: 6px;
-    padding: 7px 12px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
-}
-
-.emp-btn-light {
-    background: #eaf1fa;
-    color: #1d56a5;
-}
-
-.emp-btn-light:hover {
-    background: #d8e6f8;
-}
-
-.emp-btn-danger {
-    background: #fdecec;
-    color: #c62828;
-}
-
-.emp-btn-danger:hover {
-    background: #fbd5d5;
-}
-
-.emp-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
 
 .emp-mensaje {
     display: none;
     margin: 15px 0;
     padding: 12px 15px;
     border-radius: 7px;
-    font-size: 0.88rem;
+    font-size: 14px;
     font-weight: 500;
 }
 
@@ -361,72 +168,144 @@ body {
     border: 1px solid #f3c4c4;
 }
 
-/* ==============================
-   RESPONSIVE
-============================== */
+/* BOTONES */
+.emp-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 18px 24px;
+    margin: 0 -24px;
+    background: #eef3fa;
+    border-top: 1px solid var(--emp-border);
+}
 
-/* ==============================
-   RESPONSIVE
-============================== */
+.emp-btn {
+    padding: 9px 20px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+}
 
+.emp-btn-light {
+    background: #eaf1fa;
+    color: var(--emp-primary);
+}
+
+.emp-btn-light:hover {
+    background: #d8e6f8;
+}
+
+.emp-btn-primary {
+    background: var(--emp-primary);
+    border: 1px solid var(--emp-primary);
+    color: #fff;
+}
+
+.emp-btn-primary:hover:not(:disabled) {
+    background: var(--emp-primary-hover);
+    border-color: var(--emp-primary-hover);
+}
+
+.emp-btn-danger {
+    background: #fdecec;
+    color: #c62828;
+}
+
+.emp-btn-danger:hover {
+    background: #fbd5d5;
+}
+
+.emp-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* LISTADO DE EMPLEADOS */
+.emp-listado {
+    margin-top: 28px;
+}
+
+.emp-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.emp-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.emp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: var(--emp-text);
+    white-space: nowrap;
+}
+
+.emp-table thead {
+    background: #f1f5fa;
+}
+
+.emp-table th {
+    padding: 13px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #526176;
+    text-align: left;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--emp-border);
+}
+
+.emp-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--emp-border);
+    vertical-align: middle;
+}
+
+.emp-table tbody tr { transition: background .2s ease; }
+.emp-table tbody tr:hover { background: #f7f9fc; }
+.emp-table tbody tr:last-child td { border-bottom: none; }
+.emp-table td:last-child {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.emp-table td:last-child .emp-btn {
+    padding: 7px 12px;
+    font-size: 12px;
+}
+
+/* RESPONSIVE */
 @media (max-width: 767.98px) {
-
-    /* Contenedor */
-    .emp-container {
-        padding: 20px 14px 0;
-    }
-
-    /* Tarjetas */
-    .emp-card {
-        padding: 18px 16px 20px;
-    }
-
-    .emp-listado {
-        padding: 16px;
-    }
-
-    /* Formularios */
+    .emp-card { padding: 18px 16px 20px; }
+    .emp-listado { padding: 16px; }
     .emp-col-4,
-    .emp-col-6 {
-        grid-column: span 12;
-    }
-
+    .emp-col-6 { grid-column: span 12; }
     .emp-split {
         grid-template-columns: 1fr;
         gap: 24px;
     }
 
-    .emp-split .emp-card {
-        margin-bottom: 0;
-    }
-
-    /* Botones del formulario */
     .emp-actions {
-        margin: 0 -14px;
-        padding: 16px 14px;
+        margin: 0 -16px;
+        padding: 16px;
     }
 
-    /* Listado */
-    .emp-list-header {
-        align-items: flex-start;
-    }
-
-    .emp-table {
-        font-size: 0.8rem;
-    }
-
+    .emp-list-header { align-items: flex-start; }
+    .emp-table { font-size: 13px; }
     .emp-table th,
-    .emp-table td {
-        padding: 10px;
-    }
-
-    .emp-table td:last-child {
-        gap: 5px;
-    }
-
-    /* Botones de acciones */
-    .emp-btn {
+    .emp-table td { padding: 10px; }
+    .emp-table td:last-child { gap: 5px; }
+    .emp-table td:last-child .emp-btn {
         padding: 6px 9px;
-        font-size: 0.73rem;
+        font-size: 11px;
     }
 }

@@ -63,12 +63,16 @@ const baseQuery = () => {
         .join('contratos as co', 'co.idcontrato', 'm.idcontrato')
         .join('personas as p', 'p.idpersona', 'co.idpersona')
         .join('cargos as c', 'c.idcargo', 'co.idcargo')
+        .join('sedes as s', 's.idsede', 'co.idsede')
         .select(
             'm.idmarcacion',
             'm.idcontrato',
             'p.apellidos',
             'p.nombres',
+            'p.tipodoc',
+            'p.numdoc',
             'c.nombre_cargo',
+            's.nombre_sede',
             'm.fecha',
             'm.dia',
             'm.entrada',

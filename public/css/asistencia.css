@@ -7,11 +7,14 @@
     --asist-gris: #5f6b80;
     --asist-borde: #dde4ef;
 
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+
     background: var(--asist-fondo);
     color: var(--asist-texto);
     font-family: "Inter", system-ui, sans-serif;
-    padding: 24px;
-    max-width: 1360px;
 
     [hidden] { display: none !important; }
 
