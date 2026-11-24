@@ -14,7 +14,13 @@ async function cargarOpcionesEmpleado(url, idSelect, campoId, campoTexto) {
         const respuesta = await llamarApi(url)
         const datos = Array.isArray(respuesta) ? respuesta : respuesta.data
 
-        select.innerHTML = '<option value="">Seleccione</option>'
+        select.innerHTML = ''
+
+        const primeraOpcion = document.createElement('option')
+        primeraOpcion.value = ''
+        primeraOpcion.textContent = 'Seleccione'
+        select.appendChild(primeraOpcion)
+
         datos.forEach(item => {
             const opcion = document.createElement('option')
             opcion.value = item[campoId]
@@ -26,7 +32,7 @@ async function cargarOpcionesEmpleado(url, idSelect, campoId, campoTexto) {
             select.appendChild(opcion)
         })
     } catch (error) {
-        mostrarMensajeEmpleado(`Error al cargar opciones: ${error.message}`, 'error')
+        mostrarMensajeEmpleado(error.message, 'error')
     }
 }
 
@@ -36,11 +42,15 @@ async function cargarEmpleados() {
         const respuesta = await llamarApi('/api/empleados')
         empleados = Array.isArray(respuesta) ? respuesta : respuesta.data
         cuerpo.innerHTML = ''
-        if (!empleados?.length) {
-            cuerpo.innerHTML = `
-                <tr>
-                    <td colspan="7">No hay empleados registrados.</td>
-                </tr>`
+        if (!empleados || empleados.length === 0) {
+            const fila = document.createElement('tr')
+            const celda = document.createElement('td')
+
+            celda.colSpan = 7
+            celda.textContent = 'No hay empleados registrados.'
+
+            fila.appendChild(celda)
+            cuerpo.appendChild(fila)
             return
         }
 
@@ -52,7 +62,7 @@ async function cargarEmpleados() {
                 empleado.nombre_usuario,
                 empleado.nombre_cargo,
                 empleado.nombre_sede,
-                Number(empleado.estado) === 1 ? 'Vigente' : 'Inactivo'
+                Number(empleado.estado) === 1 ? 'Activo' : 'Inactivo'
             ]
             valores.forEach(valor => {
                 const celda = document.createElement('td')
@@ -65,23 +75,42 @@ async function cargarEmpleados() {
             btnEditar.type = 'button'
             btnEditar.textContent = 'Editar'
             btnEditar.className = 'emp-btn emp-btn-light'
-            btnEditar.addEventListener('click', () => editarEmpleado(empleado.idcontrato))
+            btnEditar.addEventListener('click', function () { editarEmpleado(empleado.idcontrato) })
+
             const btnEliminar = document.createElement('button')
             btnEliminar.type = 'button'
             btnEliminar.textContent = 'Eliminar'
             btnEliminar.className = 'emp-btn emp-btn-danger'
-            btnEliminar.addEventListener('click', () => eliminarEmpleado(empleado.idcontrato))
+            btnEliminar.addEventListener('click', function () { eliminarEmpleado(empleado.idcontrato) })
 
-            acciones.append(btnEditar, btnEliminar)
+            acciones.appendChild(btnEditar)
+            acciones.appendChild(btnEliminar)
+
             fila.appendChild(acciones)
             cuerpo.appendChild(fila)
         })
     } catch (error) {
-        cuerpo.innerHTML = `
-            <tr>
-                <td colspan="7">Error al cargar empleados: ${error.message}</td>
-            </tr>`
+        cuerpo.innerHTML = ''
+        const fila = document.createElement('tr')
+        const celda = document.createElement('td')
+
+        celda.colSpan = 7
+        celda.textContent = `Error al cargar empleados: ${error.message}`
+
+        fila.appendChild(celda)
+        cuerpo.appendChild(fila)
     }
+}
+
+function nuevoEmpleado() {
+    const dialogo = document.getElementById('dialogEmpleados')
+
+    limpiarFormularioEmpleado()
+
+    document.querySelector('#dialogEmpleados .emp-title').textContent = 'Registrar empleado'
+    document.getElementById('btnGuardarEmpleado').textContent = 'Guardar empleado'
+
+    dialogo.showModal()
 }
 
 async function guardarEmpleado(event) {
@@ -107,19 +136,21 @@ async function guardarEmpleado(event) {
         const respuesta = await llamarApi(url, editando ? 'PUT' : 'POST', datos)
 
         mostrarMensajeEmpleado(
+            respuesta.message || 'Empleado guardado correctamente.'
+        )
+
+        await cargarEmpleados()
+
+        mostrarMensajeEmpleado(
             respuesta.message || (editando
                 ? 'Empleado actualizado correctamente.'
                 : 'Empleado registrado correctamente.')
         )
-
-        limpiarFormularioEmpleado()
-        await cargarEmpleados()
-
     } catch (error) {
         mostrarMensajeEmpleado(error.message, 'error')
     } finally {
         boton.disabled = false
-        boton.textContent = idEmpleadoEditando !== null
+        boton.textContent = editando
             ? 'Actualizar empleado'
             : 'Guardar empleado'
     }
@@ -129,36 +160,32 @@ async function editarEmpleado(id) {
     try {
         const respuesta = await llamarApi(`/api/empleados/${id}`)
         const empleado = respuesta.data || respuesta
-
-        idEmpleadoEditando = id
         const formulario = document.getElementById('formEmpleado')
+        const dialogo = document.getElementById('dialogEmpleados')
+
+        limpiarFormularioEmpleado()
+        idEmpleadoEditando = id
         Object.keys(empleado).forEach(campo => {
             const elemento = formulario.elements[campo]
             if (elemento && empleado[campo] !== null) {
-                if (['fechanac', 'fecha_inicio'].includes(campo)) {
-                    elemento.value = empleado[campo]
-                    ? String(empleado[campo]).substring(0, 10)
-                    : ''
-                }else {
+                if (['fechanac', 'fecha_inicio', 'fecha_fin'].includes(campo)) {
+                    elemento.value = String(empleado[campo]).substring(0, 10)
+                } else {
                     elemento.value = empleado[campo]
                 }
             }
         })
+
         formulario.elements.clave_acceso.value = ''
         formulario.elements.clave_acceso.required = false
 
-        document.querySelector('.emp-title').textContent = 'Editar empleado'
+        document.querySelector('#dialogEmpleados .emp-title').textContent = 'Editar empleado'
         document.getElementById('btnGuardarEmpleado').textContent = 'Actualizar empleado'
-
         document.getElementById('mensajeEmpleado').style.display = 'none'
-
-        formulario.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        })
+        dialogo.showModal()
 
     } catch (error) {
-        mostrarMensajeEmpleado(error.message, 'error')
+        alert(error.message)
     }
 }
 
@@ -170,10 +197,10 @@ async function eliminarEmpleado(id) {
 
     try {
         const respuesta = await llamarApi(`/api/empleados/${id}`, 'DELETE')
-        mostrarMensajeEmpleado(respuesta.message || 'Empleado eliminado correctamente.')
+        alert(respuesta.message || 'Empleado eliminado correctamente.')
         await cargarEmpleados()
     } catch (error) {
-        mostrarMensajeEmpleado(error.message, 'error')
+        alert(error.message, 'error')
     }
 }
 
@@ -183,19 +210,26 @@ function limpiarFormularioEmpleado() {
     idEmpleadoEditando = null
 
     formulario.elements.clave_acceso.required = true
-    document.querySelector('.emp-title').textContent = 'Registrar empleado'
+    document.getElementById('mensajeEmpleado').textContent = ''
+    document.getElementById('mensajeEmpleado').style.display = 'none'
     document.getElementById('btnGuardarEmpleado').textContent = 'Guardar empleado'
+}
+
+function cerrarFormularioEmpleado(){
+    const dialog = document.getElementById('dialogEmpleados')
+
+    limpiarFormularioEmpleado()
+    dialog.close()
 }
 
 window.iniciarEmpleado = async function () {
     const formulario = document.getElementById('formEmpleado')
+    
+
+    document.getElementById('btnNuevoEmpleado').addEventListener('click', nuevoEmpleado)
+    document.getElementById('btnCerrarEmpleado').addEventListener('click', cerrarFormularioEmpleado)
+    document.getElementById('btnCancelarEmpleado').addEventListener('click', cerrarFormularioEmpleado)
     formulario.addEventListener('submit', guardarEmpleado)
-    formulario.addEventListener('reset', () => {
-        idEmpleadoEditando = null
-        formulario.elements.clave_acceso.required = true
-        document.querySelector('.emp-title').textContent = 'Registrar empleado'
-        document.getElementById('btnGuardarEmpleado').textContent = 'Guardar empleado'
-    })
 
     await Promise.all([
         cargarOpcionesEmpleado('/api/cargos', 'idcargo', 'idcargo', 'nombre_cargo'),
